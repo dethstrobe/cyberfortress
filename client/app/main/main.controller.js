@@ -3,12 +3,85 @@
 angular.module('cyberfortressApp')
   .controller('MainCtrl', function ($scope, $http, socket) {
 
-    $scope.display = function () {
-      
-    }
+    var CanvasDisplay = function (parent, level) {
+      this.canvas = document.createElement("canvas");
+      this.canvas.width = 320;
+      this.canvas.height = 568;
+      parent.appendChild(this.canvas);
+      this.cx = this.canvas.getContext("2d");
 
-    var canvas = document.getElementById("game");
-    var context = canvas.getContext("2d");
+      this.cx.canvas.addEventListener("mousedown", this.mapMove);
+
+      this.level = level;
+
+      this.view = {
+        x: this.canvas.width/2,
+        y: this.canvas.height/2,
+        width: this.canvas.width,
+        height: this.canvas.height
+      }
+    };
+
+    //return location of curser of click
+    CanvasDisplay.prototype.relativePos = function(event, element) {
+      var rect = element.getBoundingClientRect();
+      return {
+        x: Math.floor(event.clientX - rect.left),
+        y: Math.floor(event.clientY - rect.top)
+      };
+    };
+
+    //do onMove function on mousemove
+    CanvasDisplay.prototype.trackDrag = function(onMove, onEnd) {
+      function end(event) {
+        removeEventListener("mousemove", onMove);
+        removeEventListener("mouseup", end);
+        if (onEnd)
+          onEnd(event);
+      };
+      addEventListener("mousemove", onMove);
+      addEventListener("mouseup", end);
+    };
+
+    CanvasDisplay.prototype.mapMove = function(event) {
+      if (event.which == 1) {
+
+        var relativePos = function(event, element) {
+          var rect = element.getBoundingClientRect();
+          return {
+            x: Math.floor(event.clientX - rect.left),
+            y: Math.floor(event.clientY - rect.top)
+          };
+        };
+
+        var trackDrag = function(onMove, onEnd) {
+          var canvasPos = $scope.display.view;
+          function end(event) {
+            removeEventListener("mousemove", onMove);
+            removeEventListener("mouseup", end);
+            if (onEnd)
+              onEnd(event);
+          };
+          addEventListener("mousemove", onMove);
+          addEventListener("mouseup", end);
+        };
+
+        var canvas = this;
+        var pos = relativePos(event, canvas);
+
+        trackDrag(function(event) {
+          var currentPos = pos;
+          var newPos = relativePos(event, canvas);
+          console.log("x: "+ (newPos.x-currentPos.x) + " y: "+ (newPos.y-currentPos.y));
+          $scope.display.view.x = canvasPos.x + newPos.y-currentPos.y;
+          $scope.display.view.y = canvasPos.y + newPos.x-currentPos.x;
+          $scope.renderMap($scope.basicMap, $scope.display);
+        });
+
+
+        event.preventDefault();
+      }
+    };
 
     var tileKey = {
       x : 'black',
@@ -25,10 +98,12 @@ angular.module('cyberfortressApp')
       "xxx__xxx",
     ];
 
-    context.fillStyle = tileKey.t;
-    context.fillRect(10, 10, 100, 100);
-    context.fillStyle = tileKey[' '];
-    context.fillRect(10, 10, 50, 50);
+    $scope.display = new CanvasDisplay(document.getElementById('game'), readableMap);
+
+    $scope.display.cx.fillStyle = tileKey.t;
+    $scope.display.cx.fillRect(10, 10, 100, 100);
+    $scope.display.cx.fillStyle = tileKey[' '];
+    $scope.display.cx.fillRect(10, 10, 50, 50);
 
     $scope.mapGenerator = function(readableMap) {
       var map= [];
@@ -51,9 +126,9 @@ angular.module('cyberfortressApp')
       return map;
     }
 
-    var basicMap = $scope.mapGenerator(readableMap);
+    $scope.basicMap = $scope.mapGenerator(readableMap);
 
-    $scope.renderMap = function(mapArr, context) {
+    $scope.renderMap = function(mapArr, display) {
 
 
       for (var x = 0, xlen = mapArr.length; x<xlen; x++) {
@@ -61,14 +136,14 @@ angular.module('cyberfortressApp')
 
           var tile = mapArr[x][y];
 
-          context.fillStyle = tile.type;
-          context.fillRect(y*50, x*50, 50, 50);
+          display.cx.fillStyle = tile.type;
+          display.cx.fillRect(y*50 + display.view.y, x*50 + display.view.x, 50, 50);
 
         }
       }
     }
 
-    $scope.renderMap(basicMap, context);
+    $scope.renderMap($scope.basicMap, $scope.display);
 
 
 

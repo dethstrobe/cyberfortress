@@ -12,14 +12,18 @@ angular.module('cyberfortressApp')
 
       this.cx.canvas.addEventListener("mousedown", this.mapMove);
 
-      this.level = level;
+      this.level = {
+        height : level.length,
+        width : level[0].length,
+        scale : 50
+      };
 
       this.view = {
-        x: this.canvas.width/2,
-        y: this.canvas.height/2,
+        x: this.canvas.width/2-(this.level.width * this.level.scale / 2),
+        y: this.canvas.height/2-(this.level.height * this.level.scale / 2),
         width: this.canvas.width,
         height: this.canvas.height
-      }
+      };
     };
 
 
@@ -42,7 +46,7 @@ angular.module('cyberfortressApp')
             removeEventListener("mouseup", end);
             if (onEnd)
               onEnd(event);
-          };
+          }
           addEventListener("mousemove", onMove);
           addEventListener("mouseup", end);
         };
@@ -55,8 +59,8 @@ angular.module('cyberfortressApp')
           var currentPos = pos;
           var newPos = relativePos(event, canvas);
 
-          $scope.display.view.x = viewPos.x + newPos.y-currentPos.y;
-          $scope.display.view.y = viewPos.y + newPos.x-currentPos.x;
+          $scope.display.view.x = viewPos.x + newPos.x-currentPos.x;
+          $scope.display.view.y = viewPos.y + newPos.y-currentPos.y;
           $scope.renderMap($scope.basicMap, $scope.display);
           pos = newPos;
         });
@@ -78,7 +82,7 @@ angular.module('cyberfortressApp')
       "x      x",
       "x  tt  x",
       "x      x",
-      "xxx__xxx",
+      "xxx__xxx"
     ];
 
     $scope.display = new CanvasDisplay(document.getElementById('game'), readableMap);
@@ -107,24 +111,24 @@ angular.module('cyberfortressApp')
       }
 
       return map;
-    }
+    };
 
     $scope.basicMap = $scope.mapGenerator(readableMap);
 
     $scope.renderMap = function(mapArr, display) {
       display.cx.clearRect(0, 0, display.cx.canvas.width, display.cx.canvas.height);
 
-      for (var x = 0, xlen = mapArr.length; x<xlen; x++) {
-        for (var y = 0, ylen = mapArr[x].length; y<ylen; y++) {
+      for (var y = 0, ylen = mapArr.length; y<ylen; y++) {
+        for (var x = 0, xlen = mapArr[y].length; x<xlen; x++) {
 
-          var tile = mapArr[x][y];
+          var tile = mapArr[y][x];
 
           display.cx.fillStyle = tile.type;
-          display.cx.fillRect(y*50 + display.view.y, x*50 + display.view.x, 50, 50);
+          display.cx.fillRect(x*50 + display.view.x, y*50 + display.view.y, 50, 50);
 
         }
       }
-    }
+    };
 
     $scope.renderMap($scope.basicMap, $scope.display);
 

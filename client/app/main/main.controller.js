@@ -22,30 +22,11 @@ angular.module('cyberfortressApp')
       }
     };
 
-    //return location of curser of click
-    CanvasDisplay.prototype.relativePos = function(event, element) {
-      var rect = element.getBoundingClientRect();
-      return {
-        x: Math.floor(event.clientX - rect.left),
-        y: Math.floor(event.clientY - rect.top)
-      };
-    };
-
-    //do onMove function on mousemove
-    CanvasDisplay.prototype.trackDrag = function(onMove, onEnd) {
-      function end(event) {
-        removeEventListener("mousemove", onMove);
-        removeEventListener("mouseup", end);
-        if (onEnd)
-          onEnd(event);
-      };
-      addEventListener("mousemove", onMove);
-      addEventListener("mouseup", end);
-    };
 
     CanvasDisplay.prototype.mapMove = function(event) {
       if (event.which == 1) {
 
+        //return location of curser of click
         var relativePos = function(event, element) {
           var rect = element.getBoundingClientRect();
           return {
@@ -54,8 +35,8 @@ angular.module('cyberfortressApp')
           };
         };
 
+        //do onMove function on mousemove
         var trackDrag = function(onMove, onEnd) {
-          var canvasPos = $scope.display.view;
           function end(event) {
             removeEventListener("mousemove", onMove);
             removeEventListener("mouseup", end);
@@ -68,14 +49,16 @@ angular.module('cyberfortressApp')
 
         var canvas = this;
         var pos = relativePos(event, canvas);
+        var viewPos = $scope.display.view;
 
         trackDrag(function(event) {
           var currentPos = pos;
           var newPos = relativePos(event, canvas);
-          console.log("x: "+ (newPos.x-currentPos.x) + " y: "+ (newPos.y-currentPos.y));
-          $scope.display.view.x = canvasPos.x + newPos.y-currentPos.y;
-          $scope.display.view.y = canvasPos.y + newPos.x-currentPos.x;
+
+          $scope.display.view.x = viewPos.x + newPos.y-currentPos.y;
+          $scope.display.view.y = viewPos.y + newPos.x-currentPos.x;
           $scope.renderMap($scope.basicMap, $scope.display);
+          pos = newPos;
         });
 
 
@@ -129,7 +112,7 @@ angular.module('cyberfortressApp')
     $scope.basicMap = $scope.mapGenerator(readableMap);
 
     $scope.renderMap = function(mapArr, display) {
-
+      display.cx.clearRect(0, 0, display.cx.canvas.width, display.cx.canvas.height);
 
       for (var x = 0, xlen = mapArr.length; x<xlen; x++) {
         for (var y = 0, ylen = mapArr[x].length; y<ylen; y++) {

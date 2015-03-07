@@ -13,9 +13,9 @@ angular.module('cyberfortressApp')
       this.cx.canvas.addEventListener("mousedown", this.mapMove);
 
       this.level = {
-        height : level.length,
-        width : level[0].length,
-        scale : 50
+        height: level.length,
+        width: level[0].length,
+        scale: 100
       };
 
       this.view = {
@@ -93,24 +93,15 @@ angular.module('cyberfortressApp')
     $scope.display.cx.fillRect(10, 10, 50, 50);
 
     $scope.mapGenerator = function(readableMap) {
-      var map= [];
 
-      for (var y = 0, ylen = readableMap.length, xlen = readableMap[0].length; y<ylen; y++) {
-
-        var line = readableMap[y], gridRow=[];
-
-        for (var x = 0; x<xlen; x++) {
-          //findout what tile is in the human readable map
-          var tile = line[x], tileType = tileKey[tile];
-          //if tileType exists, add it to the gridrow
-          gridRow.push({type: tileType});
-        }
-
-        //add new row to map
-        map.push(gridRow);
-      }
-
-      return map;
+      return readableMap.map(function(line) {
+        return line.split('').map(function(character) {
+          return {
+            type: tileKey[character]
+          };
+        });
+      });
+      
     };
 
     $scope.basicMap = $scope.mapGenerator(readableMap);
@@ -118,19 +109,19 @@ angular.module('cyberfortressApp')
     $scope.renderMap = function(mapArr, display) {
       display.cx.clearRect(0, 0, display.cx.canvas.width, display.cx.canvas.height);
 
-      for (var y = 0, ylen = mapArr.length; y<ylen; y++) {
-        for (var x = 0, xlen = mapArr[y].length; x<xlen; x++) {
-
-          var tile = mapArr[y][x];
-
+      mapArr.forEach(function(line, y) {
+        line.forEach(function(tile, x) {
           display.cx.fillStyle = tile.type;
-          display.cx.fillRect(x*50 + display.view.x, y*50 + display.view.y, 50, 50);
+          display.cx.fillRect(x*display.level.scale + display.view.x, y*display.level.scale + display.view.y, display.level.scale, display.level.scale);
+        });
+      });
 
-        }
-      }
     };
 
     $scope.renderMap($scope.basicMap, $scope.display);
+
+
+
 
 
 

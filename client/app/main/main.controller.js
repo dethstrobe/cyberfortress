@@ -11,6 +11,10 @@ angular.module('cyberfortressApp')
       this.cx = this.canvas.getContext("2d");
 
       this.cx.canvas.addEventListener("mousedown", this.mapMove);
+      //Chrome, Safari, and Opera
+      this.cx.canvas.addEventListener("mousewheel", this.mapZoom);
+      //Firfox
+      this.cx.canvas.addEventListener("DOMMouseScroll", this.mapZoom);
 
       this.level = {
         height: level.length,
@@ -26,6 +30,19 @@ angular.module('cyberfortressApp')
       };
     };
 
+    CanvasDisplay.prototype.mapZoom = function(event) {
+
+      var level = $scope.display.level;
+
+      if (event.wheelDelta > 0  && level.scale < 200 || -event.detail > 0 && level.scale < 200)
+        level.scale += 10;
+      else if (event.wheelDelta < 0 && level.scale > 50 || -event.detail < 0 && level.scale > 50)
+        level.scale -= 10;
+
+      $scope.renderMap($scope.basicMap, $scope.display);
+
+      event.preventDefault();
+    }
 
     CanvasDisplay.prototype.mapMove = function(event) {
       if (event.which == 1) {
@@ -101,7 +118,7 @@ angular.module('cyberfortressApp')
           };
         });
       });
-      
+
     };
 
     $scope.basicMap = $scope.mapGenerator(readableMap);

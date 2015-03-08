@@ -11,9 +11,10 @@ angular.module('cyberfortressApp')
       this.cx = this.canvas.getContext("2d");
 
       this.cx.canvas.addEventListener("mousedown", this.mapMove);
-      //Chrome, Safari, and Opera
+      this.cx.canvas.addEventListener("click", this.mapSelect);
+      //wheel event for Chrome, Safari, and Opera
       this.cx.canvas.addEventListener("mousewheel", this.mapZoom);
-      //Firfox
+      //wheel event for Firefox
       this.cx.canvas.addEventListener("DOMMouseScroll", this.mapZoom);
 
       this.level = {
@@ -26,9 +27,28 @@ angular.module('cyberfortressApp')
         x: this.canvas.width/2-(this.level.width * this.level.scale / 2),
         y: this.canvas.height/2-(this.level.height * this.level.scale / 2),
         width: this.canvas.width,
-        height: this.canvas.height
+        height: this.canvas.height,
+        move: false
       };
     };
+
+    CanvasDisplay.prototype.mapSelect = function(event) {
+      var display = $scope.display
+
+      if (display.view.move == true)
+        return display.view.move = false;
+
+      var pos = display.relativePos(event, this);
+
+      var tileLoc = {
+        x: Math.floor((pos.x + -display.view.x) / display.level.scale),
+        y: Math.floor((pos.y + -display.view.y) / display.level.scale)
+      }
+
+      console.log("tile col: "+ tileLoc.x + " tile row: "+ tileLoc.y);
+
+      event.preventDefault();
+    }
 
     CanvasDisplay.prototype.mapZoom = function(event) {
 
@@ -42,19 +62,20 @@ angular.module('cyberfortressApp')
       $scope.renderMap($scope.basicMap, $scope.display);
 
       event.preventDefault();
-    }
+    };
+
+
+    //return location of curser of click
+    CanvasDisplay.prototype.relativePos = function(event, element) {
+      var rect = element.getBoundingClientRect();
+      return {
+        x: Math.floor(event.clientX - rect.left),
+        y: Math.floor(event.clientY - rect.top)
+      };
+    };
 
     CanvasDisplay.prototype.mapMove = function(event) {
       if (event.which == 1) {
-
-        //return location of curser of click
-        var relativePos = function(event, element) {
-          var rect = element.getBoundingClientRect();
-          return {
-            x: Math.floor(event.clientX - rect.left),
-            y: Math.floor(event.clientY - rect.top)
-          };
-        };
 
         //do onMove function on mousemove
         var trackDrag = function(onMove, onEnd) {
@@ -69,16 +90,18 @@ angular.module('cyberfortressApp')
         };
 
         var canvas = this;
-        var pos = relativePos(event, canvas);
+        var pos = $scope.display.relativePos(event, canvas);
         var viewPos = $scope.display.view;
 
         trackDrag(function(event) {
           var currentPos = pos;
-          var newPos = relativePos(event, canvas);
+          var newPos = $scope.display.relativePos(event, canvas);
 
           $scope.display.view.x = viewPos.x + newPos.x-currentPos.x;
           $scope.display.view.y = viewPos.y + newPos.y-currentPos.y;
           $scope.renderMap($scope.basicMap, $scope.display);
+
+          $scope.display.view.move = true;
           pos = newPos;
         });
 
@@ -103,11 +126,6 @@ angular.module('cyberfortressApp')
     ];
 
     $scope.display = new CanvasDisplay(document.getElementById('game'), readableMap);
-
-    $scope.display.cx.fillStyle = tileKey.t;
-    $scope.display.cx.fillRect(10, 10, 100, 100);
-    $scope.display.cx.fillStyle = tileKey[' '];
-    $scope.display.cx.fillRect(10, 10, 50, 50);
 
     $scope.mapGenerator = function(readableMap) {
 

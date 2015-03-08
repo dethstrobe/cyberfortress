@@ -28,7 +28,9 @@ angular.module('cyberfortressApp')
         y: this.canvas.height/2-(this.level.height * this.level.scale / 2),
         width: this.canvas.width,
         height: this.canvas.height,
-        move: false
+
+        move: false,
+        select: {}
       };
     };
 
@@ -45,7 +47,12 @@ angular.module('cyberfortressApp')
         y: Math.floor((pos.y + -display.view.y) / display.level.scale)
       }
 
-      console.log("tile col: "+ tileLoc.x + " tile row: "+ tileLoc.y);
+      if (typeof $scope.basicMap[tileLoc.y] !== 'undefined' && typeof $scope.basicMap[tileLoc.y][tileLoc.x] !== 'undefined')
+        display.view.select = tileLoc;
+      else
+        display.view.select = {};
+
+      $scope.renderMap($scope.basicMap, $scope.display);
 
       event.preventDefault();
     }
@@ -144,10 +151,19 @@ angular.module('cyberfortressApp')
     $scope.renderMap = function(mapArr, display) {
       display.cx.clearRect(0, 0, display.cx.canvas.width, display.cx.canvas.height);
 
+      var location = function (arrLoc, displayLoc) {
+        return arrLoc * display.level.scale + display.view[displayLoc]
+      }
+
       mapArr.forEach(function(line, y) {
         line.forEach(function(tile, x) {
           display.cx.fillStyle = tile.type;
-          display.cx.fillRect(x*display.level.scale + display.view.x, y*display.level.scale + display.view.y, display.level.scale, display.level.scale);
+          display.cx.fillRect( location(x, "x"), location(y, "y"), display.level.scale, display.level.scale);
+
+          if (Object.keys(display.view.select).length !== 0) {
+            display.cx.strokeStyle = "gold";
+            display.cx.strokeRect(location( display.view.select.x, "x"), location(display.view.select.y, "y"), display.level.scale, display.level.scale);
+          }
         });
       });
 

@@ -16,6 +16,14 @@ angular.module('cyberfortressApp')
       this.cx.canvas.addEventListener("mousewheel", this.mapZoom);
       //wheel event for Firefox
       this.cx.canvas.addEventListener("DOMMouseScroll", this.mapZoom);
+      window.onresize = function () {
+        var display = $scope.display;
+
+        display.view.width = display.cx.canvas.width = display.canvas.width = window.innerWidth;
+        display.view.height = display.cx.canvas.height = display.canvas.height = window.innerHeight;
+
+        $scope.renderMap($scope.basicMap, display);
+      }
 
       this.level = {
         height: level.length,
@@ -24,8 +32,8 @@ angular.module('cyberfortressApp')
       };
 
       this.view = {
-        x: this.canvas.width/2-(this.level.width * this.level.scale / 2),
-        y: this.canvas.height/2-(this.level.height * this.level.scale / 2),
+        x: this.canvas.width/2 - (this.level.width * this.level.scale / 2),
+        y: this.canvas.height/2 - (this.level.height * this.level.scale / 2),
         width: this.canvas.width,
         height: this.canvas.height,
 

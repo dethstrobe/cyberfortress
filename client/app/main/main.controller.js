@@ -5,8 +5,8 @@ angular.module('cyberfortressApp')
 
     var CanvasDisplay = function (parent, level) {
       this.canvas = document.createElement("canvas");
-      this.canvas.width = 620;
-      this.canvas.height = 568;
+      this.canvas.width = window.innerWidth;
+      this.canvas.height = window.innerHeight;
       parent.appendChild(this.canvas);
       this.cx = this.canvas.getContext("2d");
 
@@ -166,13 +166,21 @@ angular.module('cyberfortressApp')
     $scope.basicMap = $scope.mapGenerator(readableMap);
 
     $scope.renderMap = function(mapArr, display) {
-      if (display.view.x > display.level.scale) {
-        display.view.x = display.level.scale;
-      } else if (display.view.x < -(display.level.width * display.level.scale - display.view.width + display.level.scale) && display.level.width * display.level.scale > display.view.width) {
-        display.view.x = -(display.level.width * display.level.scale - display.view.width + display.level.scale);
-      } else if (display.level.width * display.level.scale < display.view.width) {
-        display.view.x = display.level.scale;
+
+      if (display.level.width * display.level.scale + display.level.scale * 2 < display.view.width) {
+        if (display.view.x < 0) {
+          display.view.x = 0;
+        } else if (display.view.x > display.view.width - display.level.width * display.level.scale) {
+          display.view.x = display.view.width - display.level.width * display.level.scale
+        }
+      } else {
+        if (display.view.x > display.level.scale) {
+          display.view.x = display.level.scale;
+        } else if (display.view.x < -(display.level.width * display.level.scale - display.view.width + display.level.scale)) {
+          display.view.x = -(display.level.width * display.level.scale - display.view.width + display.level.scale);
+        }
       }
+      
 
       display.cx.clearRect(0, 0, display.cx.canvas.width, display.cx.canvas.height);
 

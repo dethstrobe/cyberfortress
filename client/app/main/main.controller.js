@@ -5,7 +5,7 @@ angular.module('cyberfortressApp')
 
     var CanvasDisplay = function (parent, level) {
       this.canvas = document.createElement("canvas");
-      this.canvas.width = 320;
+      this.canvas.width = 620;
       this.canvas.height = 568;
       parent.appendChild(this.canvas);
       this.cx = this.canvas.getContext("2d");
@@ -59,14 +59,31 @@ angular.module('cyberfortressApp')
 
     CanvasDisplay.prototype.mapZoom = function(event) {
 
-      var level = $scope.display.level;
+      var display = $scope.display;
+      var pos = display.relativePos(event, this);
+      var posFromEdge = {
+        x: display.view.x - pos.x,
+        y: display.view.y - pos.y
+      };
+      var currentScale = display.level.scale;
 
-      if (event.wheelDelta > 0  && level.scale < 200 || -event.detail > 0 && level.scale < 200)
-        level.scale += 10;
-      else if (event.wheelDelta < 0 && level.scale > 50 || -event.detail < 0 && level.scale > 50)
-        level.scale -= 10;
+      var zoomOnMouse = function () {
+        var diffScale = display.level.scale / currentScale;
 
-      $scope.renderMap($scope.basicMap, $scope.display);
+        display.view.x = posFromEdge.x * diffScale + pos.x;
+        display.view.y = posFromEdge.y * diffScale + pos.y;
+      }
+
+      if (event.wheelDelta > 0  && display.level.scale < 200 || -event.detail > 0 && display.level.scale < 200) {
+        display.level.scale += 10;
+        zoomOnMouse();
+      }
+      else if (event.wheelDelta < 0 && display.level.scale > 50 || -event.detail < 0 && display.level.scale > 50) {
+        display.level.scale -= 10;
+        zoomOnMouse();
+      }
+
+      $scope.renderMap($scope.basicMap, display);
 
       event.preventDefault();
     };
@@ -149,6 +166,14 @@ angular.module('cyberfortressApp')
     $scope.basicMap = $scope.mapGenerator(readableMap);
 
     $scope.renderMap = function(mapArr, display) {
+      if (display.view.x > display.level.scale) {
+        display.view.x = display.level.scale;
+      } else if (display.view.x < -(display.level.width * display.level.scale - display.view.width + display.level.scale) && display.level.width * display.level.scale > display.view.width) {
+        display.view.x = -(display.level.width * display.level.scale - display.view.width + display.level.scale);
+      } else if (display.level.width * display.level.scale < display.view.width) {
+        display.view.x = display.level.scale;
+      }
+
       display.cx.clearRect(0, 0, display.cx.canvas.width, display.cx.canvas.height);
 
       var location = function (arrLoc, displayLoc) {

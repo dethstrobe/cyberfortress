@@ -167,19 +167,33 @@ angular.module('cyberfortressApp')
 
     $scope.renderMap = function(mapArr, display) {
 
-      if (display.level.width * display.level.scale + display.level.scale * 2 < display.view.width) {
-        if (display.view.x < 0) {
-          display.view.x = 0;
-        } else if (display.view.x > display.view.width - display.level.width * display.level.scale) {
-          display.view.x = display.view.width - display.level.width * display.level.scale
-        }
-      } else {
-        if (display.view.x > display.level.scale) {
-          display.view.x = display.level.scale;
-        } else if (display.view.x < -(display.level.width * display.level.scale - display.view.width + display.level.scale)) {
-          display.view.x = -(display.level.width * display.level.scale - display.view.width + display.level.scale);
+      var mapLimits = function (axis, dimension) {
+        var levelLength = display.level[ dimension ] * display.level.scale,
+            levelPaddedLength = levelLength + display.level.scale * 2,
+            levelDifference = display.view[ dimension ] - levelLength,
+            levelEnd = -(levelLength - display.view[ dimension ] + display.level.scale);
+
+        if ( levelPaddedLength < display.view[ dimension ]) {
+
+          if (display.view[ axis ] < 0) {
+            display.view[ axis ] = 0;
+          } else if (display.view[ axis ] > levelDifference) {
+            display.view[ axis ] = levelDifference;
+          }
+
+        } else {
+
+          if (display.view[ axis ] > display.level.scale) {
+            display.view[ axis ] = display.level.scale;
+          } else if (display.view[ axis ] < levelEnd) {
+            display.view[ axis ] = levelEnd;
+          }
+
         }
       }
+
+      mapLimits("x", "width");
+      mapLimits("y", "height");
       
 
       display.cx.clearRect(0, 0, display.cx.canvas.width, display.cx.canvas.height);

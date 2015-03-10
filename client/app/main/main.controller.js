@@ -16,6 +16,12 @@ angular.module('cyberfortressApp')
       this.cx.canvas.addEventListener("mousewheel", this.mapZoom);
       //wheel event for Firefox
       this.cx.canvas.addEventListener("DOMMouseScroll", this.mapZoom);
+
+      //touch events
+      this.cx.canvas.addEventListener("touchstart", this.mapTouchStart);
+      this.cx.canvas.addEventListener("touchmove", this.mapMoveTouch);
+
+
       window.onresize = function () {
         var display = $scope.display;
 
@@ -24,6 +30,8 @@ angular.module('cyberfortressApp')
 
         $scope.renderMap($scope.basicMap, display);
       }
+
+      this.touch = {};
 
       this.level = {
         height: level.length,
@@ -106,36 +114,79 @@ angular.module('cyberfortressApp')
       };
     };
 
-    CanvasDisplay.prototype.mapMove = function(event) {
-      if (event.which == 1) {
-
-        //do onMove function on mousemove
-        var trackDrag = function(onMove, onEnd) {
-          function end(event) {
-            removeEventListener("mousemove", onMove);
-            removeEventListener("mouseup", end);
-            if (onEnd)
-              onEnd(event);
-          }
-          addEventListener("mousemove", onMove);
-          addEventListener("mouseup", end);
+    CanvasDisplay.prototype.mapTouchStart = function (event) {
+      var display = $scope.display;
+      //move map if there is only 1 finger
+      if (event.targetTouches.length == 1) {
+        var touch = event.targetTouches[0];
+        display.touch = {
+          x: touch.pageX,
+          y: touch.pageY
         };
+      }
 
-        var canvas = this;
-        var pos = $scope.display.relativePos(event, canvas);
-        var viewPos = $scope.display.view;
+    }
 
-        trackDrag(function(event) {
-          var currentPos = pos;
-          var newPos = $scope.display.relativePos(event, canvas);
+    CanvasDisplay.prototype.mapMoveTouch = function (event) {
+      var display = $scope.display;
 
-          $scope.display.view.x = viewPos.x + newPos.x-currentPos.x;
-          $scope.display.view.y = viewPos.y + newPos.y-currentPos.y;
-          $scope.renderMap($scope.basicMap, $scope.display);
+      //move map if there is only 1 finger
+      if (event.targetTouches.length == 1) {
+        var touch = event.targetTouches[0];
+        var viewPos = display.view;
 
-          $scope.display.view.move = true;
-          pos = newPos;
-        });
+        viewPos.x += touch.pageX - display.touch.x;
+        viewPos.y += touch.pageY - display.touch.y;
+
+        display.touch.x = touch.pageX;
+        display.touch.y = touch.pageY;
+
+      //zoom map if there are 2 fingers
+      } else if (event.targetTouches.length == 2) {
+        var touch1 = event.targetTouches[0];
+        var touch2 = event.targetTouches[1];
+
+        var touchDistance =  Math.abs(touch1.pageX - touch2.pageX);
+
+        if (touchDistance > 50 && touchDistance < 200)
+          display.level.scale = touchDistance;
+
+      }
+      event.preventDefault();
+
+      $scope.renderMap($scope.basicMap, display);
+    }
+
+    CanvasDisplay.prototype.mapMove = function(event) {
+
+     if (event.which == 1) {
+
+      //do onMove function on mousemove
+      var trackDrag = function(onMove, onEnd) {
+        function end(event) {
+          removeEventListener("mousemove", onMove);
+          removeEventListener("mouseup", end);
+          if (onEnd)
+            onEnd(event);
+        }
+        addEventListener("mousemove", onMove);
+        addEventListener("mouseup", end);
+      };
+
+      var canvas = this;
+      var pos = $scope.display.relativePos(event, canvas);
+      var viewPos = $scope.display.view;
+
+      trackDrag(function(event) {
+        var newPos = $scope.display.relativePos(event, canvas);
+
+        viewPos.x += newPos.x-pos.x;
+        viewPos.y += newPos.y-pos.y;
+        $scope.renderMap($scope.basicMap, $scope.display);
+
+        viewPos.move = true;
+        pos = newPos;
+      });
 
 
         event.preventDefault();

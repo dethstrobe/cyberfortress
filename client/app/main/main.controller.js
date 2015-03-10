@@ -119,10 +119,13 @@ angular.module('cyberfortressApp')
       //move map if there is only 1 finger
       if (event.targetTouches.length == 1) {
         var touch = event.targetTouches[0];
-        display.touch = {
-          x: touch.pageX,
-          y: touch.pageY
-        };
+        display.touch.x = touch.pageX;
+        display.touch.y = touch.pageY;
+      } else if (event.targetTouches.length == 2) {
+        var touch1 = event.targetTouches[0],
+            touch2 = event.targetTouches[1];
+        display.touch.hypotenuse = Math.sqrt(touch1.pageX * touch1.pageX + touch2.pageX * touch2.pageX);
+        
       }
 
     }
@@ -146,10 +149,15 @@ angular.module('cyberfortressApp')
         var touch1 = event.targetTouches[0];
         var touch2 = event.targetTouches[1];
 
-        var touchDistance =  Math.abs(touch1.pageX - touch2.pageX);
+        var hypo =  Math.sqrt(touch1.pageX * touch1.pageX + touch2.pageX * touch2.pageX);
+        var hypoDiff = hypo - display.touch.hypotenuse;
 
-        if (touchDistance > 50 && touchDistance < 200)
-          display.level.scale = touchDistance;
+        if (hypoDiff > 0 && display.level.scale < 200)
+          display.level.scale += hypoDiff;
+        else if (hypoDiff < 0 && display.level.scale > 50)
+          display.level.scale += hypoDiff;
+
+        display.touch.hypotenuse = hypo;
 
       }
       event.preventDefault();

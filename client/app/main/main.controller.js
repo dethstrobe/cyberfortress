@@ -21,16 +21,6 @@ angular.module('cyberfortressApp')
       this.cx.canvas.addEventListener("touchstart", this.mapTouchStart);
       this.cx.canvas.addEventListener("touchmove", this.mapMoveTouch);
 
-
-      window.onresize = function () {
-        var display = $scope.display;
-
-        display.view.width = display.cx.canvas.width = display.canvas.width = window.innerWidth;
-        display.view.height = display.cx.canvas.height = display.canvas.height = window.innerHeight;
-
-        $scope.renderMap($scope.basicMap, display);
-      }
-
       this.touch = {};
 
       this.level = {
@@ -53,7 +43,7 @@ angular.module('cyberfortressApp')
     CanvasDisplay.prototype.mapSelect = function(event) {
       var display = $scope.display
 
-      if (display.view.move == true)
+      if (display.view.move === true)
         return display.view.move = false;
 
       var pos = display.relativePos(event, this);
@@ -61,7 +51,7 @@ angular.module('cyberfortressApp')
       var tileLoc = {
         x: Math.floor((pos.x + -display.view.x) / display.level.scale),
         y: Math.floor((pos.y + -display.view.y) / display.level.scale)
-      }
+      };
 
       if (typeof $scope.basicMap[tileLoc.y] !== 'undefined' && typeof $scope.basicMap[tileLoc.y][tileLoc.x] !== 'undefined')
         display.view.select = tileLoc;
@@ -71,7 +61,7 @@ angular.module('cyberfortressApp')
       $scope.renderMap($scope.basicMap, $scope.display);
 
       event.preventDefault();
-    }
+    };
 
     CanvasDisplay.prototype.mapZoom = function(event) {
 
@@ -83,25 +73,26 @@ angular.module('cyberfortressApp')
       };
       var currentScale = display.level.scale;
 
-      var zoomOnMouse = function () {
-        var diffScale = display.level.scale / currentScale;
-
-        display.view.x = posFromEdge.x * diffScale + pos.x;
-        display.view.y = posFromEdge.y * diffScale + pos.y;
-      }
-
       if (event.wheelDelta > 0  && display.level.scale < 200 || -event.detail > 0 && display.level.scale < 200) {
         display.level.scale += 10;
-        zoomOnMouse();
+        display.zoomOnCenter(display, currentScale, posFromEdge, pos);
       }
       else if (event.wheelDelta < 0 && display.level.scale > 50 || -event.detail < 0 && display.level.scale > 50) {
         display.level.scale -= 10;
-        zoomOnMouse();
+        display.zoomOnCenter(display, currentScale, posFromEdge, pos);
       }
 
       $scope.renderMap($scope.basicMap, display);
 
       event.preventDefault();
+    };
+
+    CanvasDisplay.prototype.zoomOnCenter = function(display, currentScale, posFromEdge, pos) {
+
+      var diffScale = display.level.scale / currentScale;
+
+      display.view.x = posFromEdge.x * diffScale + pos.x;
+      display.view.y = posFromEdge.y * diffScale + pos.y;
     };
 
 
@@ -125,10 +116,11 @@ angular.module('cyberfortressApp')
         var touch1 = event.targetTouches[0],
             touch2 = event.targetTouches[1];
         display.touch.hypotenuse = Math.sqrt(touch1.pageX * touch1.pageX + touch2.pageX * touch2.pageX);
-        
+        display.touch.x = (touch1.pageX + touch2.pageX) / 2;
+        display.touch.y = (touch1.pageY + touch2.pageY) / 2;
       }
 
-    }
+    };
 
     CanvasDisplay.prototype.mapMoveTouch = function (event) {
       var display = $scope.display;
@@ -152,10 +144,19 @@ angular.module('cyberfortressApp')
         var hypo =  Math.sqrt(touch1.pageX * touch1.pageX + touch2.pageX * touch2.pageX);
         var hypoDiff = hypo - display.touch.hypotenuse;
 
-        if (hypoDiff > 0 && display.level.scale < 200)
+        var posFromEdge = {
+          x: display.view.x - display.touch.x,
+          y: display.view.y - display.touch.y
+        };
+        var currentScale = display.level.scale;
+
+        if (hypoDiff > 0 && display.level.scale < 200) {
           display.level.scale += hypoDiff;
-        else if (hypoDiff < 0 && display.level.scale > 50)
+          display.zoomOnCenter(display, currentScale, posFromEdge, display.touch);
+        } else if (hypoDiff < 0 && display.level.scale > 50){
           display.level.scale += hypoDiff;
+          display.zoomOnCenter(display, currentScale, posFromEdge, display.touch);
+        }
 
         display.touch.hypotenuse = hypo;
 
@@ -163,7 +164,7 @@ angular.module('cyberfortressApp')
       event.preventDefault();
 
       $scope.renderMap($scope.basicMap, display);
-    }
+    };
 
     CanvasDisplay.prototype.mapMove = function(event) {
 
@@ -218,6 +219,17 @@ angular.module('cyberfortressApp')
 
     $scope.display = new CanvasDisplay(document.getElementById('game'), readableMap);
 
+    //resizes canvas if window size changes
+    window.onresize = function () {
+      var display = $scope.display;
+
+      display.view.width = display.cx.canvas.width = display.canvas.width = window.innerWidth;
+      display.view.height = display.cx.canvas.height = display.canvas.height = window.innerHeight;
+
+      $scope.renderMap($scope.basicMap, display);
+    };
+
+
     $scope.mapGenerator = function(readableMap) {
 
       return readableMap.map(function(line) {
@@ -257,7 +269,7 @@ angular.module('cyberfortressApp')
           }
 
         }
-      }
+      };
 
       mapLimits("x", "width");
       mapLimits("y", "height");
@@ -266,8 +278,8 @@ angular.module('cyberfortressApp')
       display.cx.clearRect(0, 0, display.cx.canvas.width, display.cx.canvas.height);
 
       var location = function (arrLoc, displayLoc) {
-        return arrLoc * display.level.scale + display.view[displayLoc]
-      }
+        return arrLoc * display.level.scale + display.view[displayLoc];
+      };
 
       mapArr.forEach(function(line, y) {
         line.forEach(function(tile, x) {

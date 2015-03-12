@@ -102,8 +102,8 @@ angular.module('cyberfortressApp')
 	    CanvasDisplay.prototype.relativePos = function(event, element) {
 	      var rect = element.getBoundingClientRect();
 	      return {
-	        x: Math.floor(event.offsetX - rect.left),
-	        y: Math.floor(event.offsetY - rect.top)
+	        x: Math.floor(event.clientX - rect.left),
+	        y: Math.floor(event.clientY - rect.top)
 	      };
 	    };
 

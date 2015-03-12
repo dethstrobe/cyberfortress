@@ -72,11 +72,11 @@ angular.module('cyberfortressApp')
 	      };
 	      var currentScale = display.level.scale;
 
-	      if (event.deltaY > 0  && display.level.scale < 200 || -event.detail > 0 && display.level.scale < 200) {
+	      if (event.deltaY < 0  && display.level.scale < 200) {
 	        display.level.scale += 10;
 	        display.zoomOnCenter(display, currentScale, posFromEdge, pos);
 	      }
-	      else if (event.deltaY < 0 && display.level.scale > 50 || -event.detail < 0 && display.level.scale > 50) {
+	      else if (event.deltaY > 0 && display.level.scale > 50) {
 	        display.level.scale -= 10;
 	        display.zoomOnCenter(display, currentScale, posFromEdge, pos);
 	      }

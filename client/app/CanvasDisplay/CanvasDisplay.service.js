@@ -1,7 +1,7 @@
 'use strict';
 
 angular.module('cyberfortressApp')
-  .service('CanvasDisplay', function ($window) {
+  .factory('CanvasDisplay', function ($window) {
     // AngularJS will instantiate a singleton by calling "new" on this function
     return function (parent, level, renderMap, map) {
     	var display = this;
@@ -65,20 +65,18 @@ angular.module('cyberfortressApp')
 	    };
 
 	    this.mapZoom = function(event) {
-
-	      
-	      var pos = display.relativePos(event, this);
+	      var pos = display.relativePos(event.originalEvent, this.cx.canvas);
 	      var posFromEdge = {
 	        x: display.view.x - pos.x,
 	        y: display.view.y - pos.y
 	      };
 	      var currentScale = display.level.scale;
 
-	      if (event.wheelDelta > 0  && display.level.scale < 200 || -event.detail > 0 && display.level.scale < 200) {
+	      if (event.deltaY > 0  && display.level.scale < 200 || -event.detail > 0 && display.level.scale < 200) {
 	        display.level.scale += 10;
 	        display.zoomOnCenter(display, currentScale, posFromEdge, pos);
 	      }
-	      else if (event.wheelDelta < 0 && display.level.scale > 50 || -event.detail < 0 && display.level.scale > 50) {
+	      else if (event.deltaY < 0 && display.level.scale > 50 || -event.detail < 0 && display.level.scale > 50) {
 	        display.level.scale -= 10;
 	        display.zoomOnCenter(display, currentScale, posFromEdge, pos);
 	      }

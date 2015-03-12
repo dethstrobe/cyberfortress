@@ -3,7 +3,7 @@
 <header>
 </header>
 
-<canvas game-stage id="game" ng-mousedown="display.mapMove($event)" ng-click="display.mapSelect($event)"/>
+<canvas game-stage id="game" ng-mousedown="display.mapMove($event)" ng-click="display.mapSelect($event)" msd-wheel="display.mapZoom($event, $delta, $deltaX, $deltaY)"/>
 
 <div class="container">
 </div>

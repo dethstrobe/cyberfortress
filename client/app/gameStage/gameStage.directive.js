@@ -13,7 +13,6 @@ angular.module('cyberfortressApp')
 	      //parent.append(this.canvas);
 	      this.cx = this.canvas.getContext("2d");
 
-	      //this.cx.canvas.addEventListener("mousedown", this.mapMove);
 	      this.cx.canvas.addEventListener("click", this.mapSelect);
 	      //wheel event for Chrome, Safari, and Opera
 	      this.cx.canvas.addEventListener("mousewheel", this.mapZoom);

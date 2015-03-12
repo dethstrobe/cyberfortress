@@ -4,7 +4,6 @@ describe('Directive: gameStage', function () {
 
   // load the directive's module and view
   beforeEach(module('cyberfortressApp'));
-  beforeEach(module('app/gameStage/gameStage.html'));
 
   var element, scope;
 

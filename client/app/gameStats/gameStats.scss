@@ -1,8 +1,7 @@
-#stats {
+game-stats {
 	z-index: 1000;
 	position: absolute;
 	width: 100%;
-	color: green;
 
 	background: linear-gradient(180deg, #222222, #2a0022, #222222);
 	background-size: 600% 600%;
@@ -16,14 +15,13 @@
 	    50%{background-position:50% 100%}
 	    100%{background-position:51% 0%}
 	}
-	@-moz-keyframes gameStats {
-	    0%{background-position:51% 0%}
-	    50%{background-position:50% 100%}
-	    100%{background-position:51% 0%}
-	}
 	@keyframes gameStats { 
 	    0%{background-position:51% 0%}
 	    50%{background-position:50% 100%}
 	    100%{background-position:51% 0%}
 	}
+}
+
+.stats {
+	color: green;
 }

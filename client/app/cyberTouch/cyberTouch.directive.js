@@ -10,15 +10,11 @@ angular.module('cyberfortressApp')
       link: function (scope, element, attrs) {
 
         element.on('touchstart', function(event) {
-            scope.$apply(function() { 
-            	scope.cyberTouch.mapTouchStart(event.originalEvent);
-            });
+        	scope.cyberTouch.mapTouchStart(event.originalEvent);
         });
 
         element.on('touchmove', function(event) {
-            scope.$apply(function() { 
-                scope.cyberTouch.mapMoveTouch(event.originalEvent);
-            });
+          scope.cyberTouch.mapMoveTouch(event.originalEvent);
         });
 
       }

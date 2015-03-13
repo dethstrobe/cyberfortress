@@ -17,6 +17,19 @@ angular.module('cyberfortressApp')
           scope.cyberTouch.mapMoveTouch(event.originalEvent);
         });
 
+        element.on('click', function(event) {
+          scope.cyberTouch.mapSelect(event);
+        });
+
+        element.on('mousedown', function(event) {
+          scope.cyberTouch.mapMove(event);
+        });
+
+        element.on('mousewheel', function(event) {
+          console.log(event);
+          scope.cyberTouch.mapZoom(event);
+        });
+
       }
     };
   });

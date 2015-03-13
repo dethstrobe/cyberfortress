@@ -55,6 +55,7 @@ angular.module('cyberfortressApp')
 	    };
 
 	    this.mapZoom = function(event) {
+	    	console.log(event);
 	      var pos = display.relativePos(event.originalEvent, this.cx.canvas);
 	      var posFromEdge = {
 	        x: display.view.x - pos.x,

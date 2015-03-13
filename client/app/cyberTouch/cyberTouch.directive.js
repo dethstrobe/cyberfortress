@@ -25,11 +25,6 @@ angular.module('cyberfortressApp')
           scope.cyberTouch.mapMove(event);
         });
 
-        element.on('mousewheel', function(event) {
-          console.log(event);
-          scope.cyberTouch.mapZoom(event);
-        });
-
       }
     };
   });

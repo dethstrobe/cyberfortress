@@ -3,12 +3,9 @@
 angular.module('cyberfortressApp')
   .controller('MainCtrl', function ($scope, $http, socket) {
 
-    var tileKey = {
-      x : 'black',
-      _ : 'blue',
-      ' ' : 'white',
-      t : 'green'
-    };
+    $scope.res = {
+      rupee: 100
+    }
 
     $scope.readableMap = [
       "x_xxxx_x",
@@ -20,10 +17,17 @@ angular.module('cyberfortressApp')
 
     $scope.mapGenerator = function(readableMap) {
 
+      var tileKey = {
+        x : 'wall',
+        _ : 'exit',
+        ' ' : 'empty',
+        t : 'research'
+      };
+
       return $scope.readableMap.map(function(line) {
-        return line.split('').map(function(character) {
+        return line.split('').map(function(tileType) {
           return {
-            type: tileKey[character]
+            type: tileKey[tileType]
           };
         });
       });
@@ -34,6 +38,7 @@ angular.module('cyberfortressApp')
 
     $scope.renderMap = function(mapArr, display) {
 
+      //this function restricts how far a map can scroll
       var mapLimits = function (axis, dimension) {
         var levelLength = display.level[ dimension ] * display.level.scale,
             levelPaddedLength = levelLength + display.level.scale * 2,
@@ -62,18 +67,27 @@ angular.module('cyberfortressApp')
       mapLimits("x", "width");
       mapLimits("y", "height");
       
-
       display.cx.clearRect(0, 0, display.cx.canvas.width, display.cx.canvas.height);
 
+      //this function finds the location of each tile
       var location = function (arrLoc, displayLoc) {
         return arrLoc * display.level.scale + display.view[displayLoc];
       };
 
+      var tileColorKey = {
+        wall: '#000',
+        exit: 'blue',
+        empty: 'white',
+        research: 'green'
+      }
+
+      //This renders each tile
       mapArr.forEach(function(line, y) {
         line.forEach(function(tile, x) {
-          display.cx.fillStyle = tile.type;
+          display.cx.fillStyle = tileColorKey[tile.type];
           display.cx.fillRect( location(x, "x"), location(y, "y"), display.level.scale, display.level.scale);
 
+          //this displays the seleted tile
           if (Object.keys(display.view.select).length !== 0) {
             display.cx.strokeStyle = "gold";
             display.cx.strokeRect(location( display.view.select.x, "x"), location(display.view.select.y, "y"), display.level.scale, display.level.scale);

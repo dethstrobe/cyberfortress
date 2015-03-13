@@ -5,4 +5,27 @@
     position: absolute;
     top: 0;
     left: 0;
+
+    background: linear-gradient(0deg, #4bc5cf, #4b79cf, #4bc5cf);
+	background-size: 600% 600%;
+
+	-webkit-animation: gameStage 60s ease infinite;
+	-moz-animation: gameStage 60s ease infinite;
+	animation: gameStage 60s ease infinite;
+
+	@-webkit-keyframes gameStage {
+	    0%{background-position:50% 0%}
+	    50%{background-position:50% 100%}
+	    100%{background-position:50% 0%}
+	}
+	@-moz-keyframes gameStage {
+	    0%{background-position:50% 0%}
+	    50%{background-position:50% 100%}
+	    100%{background-position:50% 0%}
+	}
+	@keyframes gameStage { 
+	    0%{background-position:50% 0%}
+	    50%{background-position:50% 100%}
+	    100%{background-position:50% 0%}
+	}
 }

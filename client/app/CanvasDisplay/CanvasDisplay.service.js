@@ -11,7 +11,6 @@ angular.module('cyberfortressApp')
 	      this.canvas = parent[0];
 	      this.canvas.width = $window.innerWidth;
 	      this.canvas.height = $window.innerHeight;
-	      //parent.append(this.canvas);
 	      this.cx = this.canvas.getContext("2d");
 
 	      this.touch = {};

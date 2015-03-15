@@ -7,6 +7,10 @@ angular.module('cyberfortressApp')
       rupee: 100
     }
 
+    $scope.controls = {
+      menu: true
+    };
+
     $scope.readableMap = [
       "x_xxxx_x",
       "x      x",
@@ -98,6 +102,7 @@ angular.module('cyberfortressApp')
     };
 
 
+  
 
 
 

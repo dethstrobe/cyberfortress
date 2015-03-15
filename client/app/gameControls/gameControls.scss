@@ -1,0 +1,21 @@
+game-controls {
+	bottom: 20px;
+	right: 20px;
+	position: absolute;
+	z-index: 1000;
+}
+
+.game-menu {
+	button {
+		float: right;
+	}
+
+	ul.game-con li{
+		background: white;
+	}
+	
+	ul.game-con li a{
+		text-align: right;
+		padding: 1em;
+	}
+}

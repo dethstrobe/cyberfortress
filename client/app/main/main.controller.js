@@ -8,7 +8,8 @@ angular.module('cyberfortressApp')
     }
 
     $scope.controls = {
-      menu: true
+      menu: true,
+      build: {}
     };
 
     $scope.readableMap = [
@@ -22,10 +23,10 @@ angular.module('cyberfortressApp')
     $scope.mapGenerator = function(readableMap) {
 
       var tileKey = {
-        x : 'wall',
-        _ : 'exit',
-        ' ' : 'empty',
-        t : 'research'
+        x : 'Wall',
+        _ : 'Exit',
+        ' ' : 'Empty',
+        t : 'Research'
       };
 
       return $scope.readableMap.map(function(line) {
@@ -38,7 +39,7 @@ angular.module('cyberfortressApp')
 
     };
 
-    $scope.basicMap = $scope.mapGenerator($scope.readableMap);
+    $scope.currentMap = $scope.mapGenerator($scope.readableMap);
 
     $scope.renderMap = function(mapArr, display) {
 
@@ -79,10 +80,10 @@ angular.module('cyberfortressApp')
       };
 
       var tileColorKey = {
-        wall: '#000',
-        exit: 'blue',
-        empty: 'white',
-        research: 'green'
+        Wall: '#000',
+        Exit: 'blue',
+        Empty: 'white',
+        Research: 'green'
       }
 
       //This renders each tile
@@ -92,7 +93,7 @@ angular.module('cyberfortressApp')
           display.cx.fillRect( location(x, "x"), location(y, "y"), display.level.scale, display.level.scale);
 
           //this displays the seleted tile
-          if (Object.keys(display.view.select).length !== 0) {
+          if (display.view.select) {
             display.cx.strokeStyle = "gold";
             display.cx.strokeRect(location( display.view.select.x, "x"), location(display.view.select.y, "y"), display.level.scale, display.level.scale);
           }
@@ -100,7 +101,6 @@ angular.module('cyberfortressApp')
       });
 
     };
-
 
   
 

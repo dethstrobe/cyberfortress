@@ -5,13 +5,14 @@ angular.module('cyberfortressApp')
     return {
       restrict: 'EA',
       link: function ($scope, element, attrs) {
+      	var map = $scope.currentMap
 
 
-	    $scope.display = new CanvasDisplay(element, $scope.readableMap, $scope.renderMap, $scope.basicMap);
+	    $scope.display = new CanvasDisplay(element, $scope.readableMap, $scope.renderMap, map);
 	    var display = $scope.display;
 
 
-    	$scope.renderMap($scope.basicMap, display);
+    	$scope.renderMap(map, display);
 
 	    //resizes canvas if window size changes
 	    $window.onresize = function () {
@@ -19,7 +20,7 @@ angular.module('cyberfortressApp')
 	      display.view.width = display.cx.canvas.width = display.canvas.width = $window.innerWidth;
 	      display.view.height = display.cx.canvas.height = display.canvas.height = $window.innerHeight;
 
-	      $scope.renderMap($scope.basicMap, display);
+	      $scope.renderMap(map, display);
 	    };
       }
     };

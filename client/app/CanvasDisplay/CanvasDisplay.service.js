@@ -28,7 +28,7 @@ angular.module('cyberfortressApp')
 	        height: this.canvas.height,
 
 	        move: false,
-	        select: {}
+	        select: null
 	      };
 
 		this.mapSelect = function(event) {
@@ -40,19 +40,23 @@ angular.module('cyberfortressApp')
 	      var pos = display.relativePos(event, canvas);
 
 	      var tileLoc = {
-	        x: Math.floor((pos.x + -display.view.x) / display.level.scale),
-	        y: Math.floor((pos.y + -display.view.y) / display.level.scale)
+	        x: Math.floor((pos.x - display.view.x) / display.level.scale),
+	        y: Math.floor((pos.y - display.view.y) / display.level.scale)
 	      };
 
 	      if (typeof map[tileLoc.y] !== 'undefined' && typeof map[tileLoc.y][tileLoc.x] !== 'undefined')
 	        display.view.select = tileLoc;
 	      else
-	        display.view.select = {};
+	        display.view.select = null;
 
 	      renderMap(map, display);
 
 	      event.preventDefault();
 	    };
+
+	    this.mapAction = function() {
+
+	    }
 
 	    this.mapZoom = function(event) {
 	      var pos = display.relativePos(event.originalEvent, this.cx.canvas);

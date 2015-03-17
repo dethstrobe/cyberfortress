@@ -9,7 +9,8 @@ angular.module('cyberfortressApp')
 
     $scope.controls = {
       menu: true,
-      build: {}
+      build: null,
+      operation: false
     };
 
     $scope.readableMap = [
@@ -83,7 +84,9 @@ angular.module('cyberfortressApp')
         Wall: '#000',
         Exit: 'blue',
         Empty: 'white',
-        Research: 'green'
+        Research: 'green',
+        Turret: 'red',
+        'Pressure Plate': 'cyan'
       }
 
       //This renders each tile
@@ -102,7 +105,23 @@ angular.module('cyberfortressApp')
 
     };
 
-  
+    $scope.operation = function () {
+      var op = $scope.controls.operation;
+      if (op == false) {
+        op = true;
+        angular.element('canvas').off('click');
+      } else {
+        op = false;
+        angular.element('canvas').on('click', function(event) {
+          $scope.display.mapSelect(event);
+        });
+      }
+
+      $scope.controls.operation = op;
+
+      console.log(op);
+    };
+
 
 
 

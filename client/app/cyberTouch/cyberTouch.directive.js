@@ -1,7 +1,7 @@
 'use strict';
 
 angular.module('cyberfortressApp')
-  .directive('cyberTouch', function ($parse) {
+  .directive('cyberTouch', function () {
     return {
     	scope: {
     		cyberTouch: "="

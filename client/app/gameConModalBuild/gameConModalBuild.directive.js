@@ -6,7 +6,7 @@ angular.module('cyberfortressApp')
       restrict: 'EA',
       link: function (scope, element, attrs) {
 
-      	scope.items = ['Turret', 'Pressure Plate', 'item3'];
+      	scope.items = ['Turret', 'Pressure Plate', 'Empty'];
 
       	scope.open = function (size) {
 
@@ -22,7 +22,10 @@ angular.module('cyberfortressApp')
 			});
 
 			modalInstance.result.then(function (selectedItem) {
-			  scope.controls.build.selected = selectedItem;
+			  scope.controls.build = selectedItem;
+
+			  //hide menu if build has been okayed
+			  scope.controls.menu = true;
 			  
 			  //allows building of new stuff
 			  scope.display.view.select = null;

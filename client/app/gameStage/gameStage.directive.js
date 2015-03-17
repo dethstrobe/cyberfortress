@@ -7,8 +7,8 @@ angular.module('cyberfortressApp')
       link: function ($scope, element, attrs) {
       	var map = $scope.currentMap
 
-
-	    $scope.display = new CanvasDisplay(element, $scope.readableMap, $scope.renderMap, map);
+        //this creates the logic for the canvas
+	    $scope.display = new CanvasDisplay(element, $scope.readableMap, $scope.renderMap, map, $scope.controls);
 	    var display = $scope.display;
 
 

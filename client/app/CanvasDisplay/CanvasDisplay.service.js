@@ -3,10 +3,9 @@
 angular.module('cyberfortressApp')
   .factory('CanvasDisplay', function ($window) {
     // AngularJS will instantiate a singleton by calling "new" on this function
-    return function (parent, level, renderMap, map) {
+    return function (parent, level, renderMap, map, controls) {
     	var display = this;
     	var renderMap = renderMap;
-    	var map = map;
 
 	      this.canvas = parent[0];
 	      this.canvas.width = $window.innerWidth;
@@ -44,7 +43,9 @@ angular.module('cyberfortressApp')
 	        y: Math.floor((pos.y - display.view.y) / display.level.scale)
 	      };
 
-	      if (typeof map[tileLoc.y] !== 'undefined' && typeof map[tileLoc.y][tileLoc.x] !== 'undefined')
+	      if (display.view.select!== null && tileLoc.y === display.view.select.y && tileLoc.x === display.view.select.x)
+	      	display.mapAction(tileLoc);
+	      else if (typeof map[tileLoc.y] !== 'undefined' && typeof map[tileLoc.y][tileLoc.x] !== 'undefined')
 	        display.view.select = tileLoc;
 	      else
 	        display.view.select = null;
@@ -54,8 +55,11 @@ angular.module('cyberfortressApp')
 	      event.preventDefault();
 	    };
 
-	    this.mapAction = function() {
+	    this.mapAction = function(location) {
+	    	if (!controls.build)
+	    		return;
 
+	    	map[location.y][location.x]['type'] = controls.build;
 	    }
 
 	    this.mapZoom = function(event) {

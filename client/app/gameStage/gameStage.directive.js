@@ -11,9 +11,7 @@ angular.module('cyberfortressApp')
 	    $scope.display = new CanvasDisplay(element, $scope.readableMap, map, $scope.controls);
 	    var display = $scope.display;
 
-      $scope.renderMap = display.mapRender;
-
-    	$scope.renderMap(map, display);
+    	$scope.display.mapRender(map, display);
 
 	    //resizes canvas if window size changes
 	    $window.onresize = function () {
@@ -21,7 +19,7 @@ angular.module('cyberfortressApp')
 	      display.view.width = display.cx.canvas.width = display.canvas.width = $window.innerWidth;
 	      display.view.height = display.cx.canvas.height = display.canvas.height = $window.innerHeight;
 
-	      $scope.renderMap(map, display);
+	      $scope.display.mapRender(map, display);
 	    };
       }
     };

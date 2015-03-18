@@ -1,17 +1,17 @@
 'use strict';
 
 angular.module('cyberfortressApp')
-  .directive('gameStage', function ($window, CanvasDisplay, MapRenderer) {
+  .directive('gameStage', function ($window, CanvasDisplay) {
     return {
       restrict: 'EA',
       link: function ($scope, element, attrs) {
       	var map = $scope.currentMap
 
-      $scope.renderMap = MapRenderer;
-
         //this creates the logic for the canvas
-	    $scope.display = new CanvasDisplay(element, $scope.readableMap, $scope.renderMap, map, $scope.controls);
+	    $scope.display = new CanvasDisplay(element, $scope.readableMap, map, $scope.controls);
 	    var display = $scope.display;
+
+      $scope.renderMap = display.mapRender;
 
     	$scope.renderMap(map, display);
 

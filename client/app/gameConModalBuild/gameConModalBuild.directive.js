@@ -29,7 +29,7 @@ angular.module('cyberfortressApp')
 			  
 			  //allows building of new stuff
 			  scope.display.view.select = null;
-			  scope.renderMap(scope.currentMap, scope.display);
+			  scope.display.mapRender(scope.currentMap, scope.display);
 
 
 			}, function () {

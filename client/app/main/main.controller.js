@@ -8,9 +8,10 @@ angular.module('cyberfortressApp')
     }
 
     $scope.controls = {
-      menu: true,
-      build: null,
-      operation: false
+      menu: true,//hide menu
+      selectColor: 'gold',//the color of the select border
+      build: null,//replace tile
+      operation: false//shadowrun
     };
 
     $scope.readableMap = [
@@ -46,12 +47,16 @@ angular.module('cyberfortressApp')
       var op = $scope.controls.operation;
       if (op == false) {
         op = true;
+        $scope.controls.selectColor = 'red';
       } else {
         op = false;
+        $scope.controls.selectColor = 'gold';
       }
 
+      $scope.controls.menu = true;
       $scope.controls.operation = op;
       $scope.display.view.select = null;
+      $scope.display.mapRender($scope.currentMap, $scope.display);
     };
 
 

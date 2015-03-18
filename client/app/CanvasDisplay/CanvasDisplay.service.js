@@ -31,35 +31,62 @@ angular.module('cyberfortressApp')
 
 		this.mapSelect = function(event) {
 
-	      if (display.view.move === true)
-	        return display.view.move = false;
-	      var canvas = event.currentTarget;
+			if (display.view.move === true)
+				return display.view.move = false;
 
-	      var pos = display.relativePos(event, canvas);
+	    	var mapAction = function(location) {
+		    	if (!controls.build)
+		    		return;
 
-	      var tileLoc = {
-	        x: Math.floor((pos.x - display.view.x) / display.level.scale),
-	        y: Math.floor((pos.y - display.view.y) / display.level.scale)
-	      };
+		    	map[location.y][location.x]['type'] = controls.build;
+		    };
 
-	      if (display.view.select!== null && tileLoc.y === display.view.select.y && tileLoc.x === display.view.select.x)
-	      	display.mapAction(tileLoc);
-	      else if (typeof map[tileLoc.y] !== 'undefined' && typeof map[tileLoc.y][tileLoc.x] !== 'undefined')
-	        display.view.select = tileLoc;
-	      else
-	        display.view.select = null;
+		    var mapCheck = function (tileLoc) {
+		    	var tileType = map[tileLoc.y][tileLoc.x]['type'];
 
-	      display.mapRender(map, display);
+		    	if (!controls.operation) {
+		    		return tileLoc;
+		    	} else if (display.view.select === null && tileType === 'Exit') {
+		    		return tileLoc;
+		    	} else if (display.view.select !== null) {
+			    	var possibleMoves = [
+			    		{x: display.view.select.x -1, y: display.view.select.y}, 
+			    		{x: display.view.select.x +1, y: display.view.select.y}, 
+			    		{x: display.view.select.x, y: display.view.select.y +1}, 
+			    		{x: display.view.select.x, y: display.view.select.y -1}, 
+			    	];
 
-	      event.preventDefault();
+					var moveCheck = possibleMoves.map(function(element) {
+						return _.isEqual(tileLoc, element)
+					});
+					if (moveCheck.indexOf(true) >= 0 && tileType !== 'Wall') {
+			    		return tileLoc;
+			    	}
+		    	}
+
+		    		return display.view.select;
+		    };
+
+			var canvas = event.currentTarget;
+
+			var pos = display.relativePos(event, canvas);
+
+			var tileLoc = {
+				x: Math.floor((pos.x - display.view.x) / display.level.scale),
+				y: Math.floor((pos.y - display.view.y) / display.level.scale)
+			};
+
+			if (display.view.select!== null && tileLoc.y === display.view.select.y && tileLoc.x === display.view.select.x)
+				mapAction(tileLoc);
+			else if (typeof map[tileLoc.y] !== 'undefined' && typeof map[tileLoc.y][tileLoc.x] !== 'undefined')
+				display.view.select = mapCheck(tileLoc);
+			else
+				display.view.select = null;
+
+
+			display.mapRender(map, display);
+			event.preventDefault();
 	    };
-
-	    this.mapAction = function(location) {
-	    	if (!controls.build)
-	    		return;
-
-	    	map[location.y][location.x]['type'] = controls.build;
-	    }
 
 	    this.mapZoom = function(event) {
 	      var pos = display.relativePos(event.originalEvent, this.cx.canvas);
@@ -229,6 +256,7 @@ angular.module('cyberfortressApp')
 	      mapLimits("x", "width");
 	      mapLimits("y", "height");
 	      
+	      //clear canvas
 	      display.cx.clearRect(0, 0, display.cx.canvas.width, display.cx.canvas.height);
 
 	      //this function finds the location of each tile
@@ -241,7 +269,7 @@ angular.module('cyberfortressApp')
 	        Exit: 'blue',
 	        Empty: 'white',
 	        Research: 'green',
-	        Turret: 'orange',
+	        Turret: 'purple',
 	        'Pressure Plate': 'cyan'
 	      }
 
@@ -256,7 +284,7 @@ angular.module('cyberfortressApp')
 
 	      //this displays the seleted tile
 	      if (display.view.select) {
-	        display.cx.strokeStyle = "gold";
+	        display.cx.strokeStyle = controls.selectColor;
 
 	        display.cx.strokeRect(location( display.view.select.x, "x"), location(display.view.select.y, "y"), display.level.scale, display.level.scale);
 	      }

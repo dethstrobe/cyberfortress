@@ -285,6 +285,7 @@ angular.module('cyberfortressApp')
 	      //this displays the seleted tile
 	      if (display.view.select) {
 	        display.cx.strokeStyle = controls.selectColor;
+	        display.cx.lineWidth = 3;
 
 	        display.cx.strokeRect(location( display.view.select.x, "x"), location(display.view.select.y, "y"), display.level.scale, display.level.scale);
 	      }

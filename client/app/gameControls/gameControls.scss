@@ -2,7 +2,13 @@ game-controls {
 	width: 100%;
 	bottom: 20px;
 	position: absolute;
-	z-index: 1000;
+
+	button,
+	ul,
+	li {
+		position: relative;
+		z-index: 1000;
+	}
 }
 
 .game-menu {

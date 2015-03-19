@@ -1,5 +1,9 @@
 game-stats {
 
+	position: absolute;
+	z-index: 1;
+	width: 100%;
+
 	background: linear-gradient(180deg, #222222, #2a0022, #222222);
 	background-size: 600% 600%;
 

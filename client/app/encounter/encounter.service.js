@@ -21,16 +21,13 @@ angular.module('cyberfortressApp')
             currentEncounter = encounterList[i]['type'];
             break;
           }
-          console.log(i, randomEncounter);
         }
-
-        console.log(currentEncounter);
       },
 
       current : function (encounter) {
-        if (typeof encounter !== undefined)
+        if (encounter !== undefined)
           currentEncounter = encounter;
-        return currentEncounter
+        return currentEncounter;
       }
       
     };

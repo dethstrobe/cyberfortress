@@ -18,7 +18,8 @@ angular.module('cyberfortressApp')
         });
 
         element.on('click', function(event) {
-          scope.cyberTouch.mapSelect(event);
+          scope.$apply(scope.cyberTouch.mapSelect(event));
+          
         });
 
         element.on('mousedown', function(event) {

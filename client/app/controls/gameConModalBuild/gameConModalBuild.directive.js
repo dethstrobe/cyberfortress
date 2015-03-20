@@ -11,7 +11,7 @@ angular.module('cyberfortressApp')
       	scope.open = function (size) {
 
 			var modalInstance = $modal.open({
-			  templateUrl: 'app/gameConModalBuild/gameConModalBuild.html',
+			  templateUrl: 'app/controls/gameConModalBuild/gameConModalBuild.html',
 			  controller: 'ModalInstanceCtrl',
 			  size: size,
 			  resolve: {

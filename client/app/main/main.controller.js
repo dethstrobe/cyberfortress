@@ -1,7 +1,7 @@
 'use strict';
 
 angular.module('cyberfortressApp')
-  .controller('MainCtrl', function ($scope, $http, socket, encounter) {
+  .controller('MainCtrl', function ($scope, $http, socket, encounter, $window) {
 
     $scope.res = {
       rupee: 100
@@ -59,6 +59,12 @@ angular.module('cyberfortressApp')
       $scope.controls.operation = op;
       $scope.display.view.select = null;
       $scope.display.mapRender($scope.currentMap, $scope.display);
+    };
+
+    //resizes canvas if window size changes
+    $window.onresize = function () {
+      $scope.gameStageResize();
+      $scope.encounterDisplayResize();
     };
 
 

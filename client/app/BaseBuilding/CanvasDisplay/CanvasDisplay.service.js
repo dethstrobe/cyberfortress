@@ -1,7 +1,7 @@
 'use strict';
 
 angular.module('cyberfortressApp')
-  .factory('CanvasDisplay', function ($window) {
+  .factory('CanvasDisplay', function ($window, encounter) {
     // AngularJS will instantiate a singleton by calling "new" on this function
     return function (parent, level, map, controls) {
     	var display = this;
@@ -44,9 +44,7 @@ angular.module('cyberfortressApp')
 		    var mapCheck = function (tileLoc) {
 		    	var tileType = map[tileLoc.y][tileLoc.x]['type'];
 
-		    	if (!controls.operation) {
-		    		return tileLoc;
-		    	} else if (display.view.select === null && tileType === 'Exit') {
+		    	if (!controls.operation || display.view.select === null && tileType === 'Exit') {
 		    		return tileLoc;
 		    	} else if (display.view.select !== null) {
 			    	var possibleMoves = [
@@ -60,6 +58,7 @@ angular.module('cyberfortressApp')
 						return _.isEqual(tileLoc, element)
 					});
 					if (moveCheck.indexOf(true) >= 0 && tileType !== 'Wall') {
+						encounter.random();
 			    		return tileLoc;
 			    	}
 		    	}

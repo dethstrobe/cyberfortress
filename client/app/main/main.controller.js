@@ -1,11 +1,13 @@
 'use strict';
 
 angular.module('cyberfortressApp')
-  .controller('MainCtrl', function ($scope, $http, socket) {
+  .controller('MainCtrl', function ($scope, $http, socket, encounter) {
 
     $scope.res = {
       rupee: 100
     }
+
+    $scope.currentEncounter = encounter.current;
 
     $scope.controls = {
       menu: true,//hide menu

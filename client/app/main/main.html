@@ -7,6 +7,8 @@
 
 <game-controls></game-controls>
 
+<div encounter-display ng-show="currentEncounter()"></div>
+
 <canvas game-stage class="game game-stage" 
 msd-wheel="display.mapZoom($event)"
 cyber-touch="display"/>

@@ -4,3 +4,58 @@
 	background: rgba(0,0,0,0.3);
 	margin-top: 20px;
 }
+
+.encounter-menu-container {
+	height: 100px;
+	overflow: scroll;
+	padding-left: 0;
+	padding-right: 0;
+}
+
+.encounter-controls {
+	position: absolute;
+  bottom: 0;
+	width: 100%;
+}
+
+.action-menu {
+	padding: 5px 0;
+	position: relative;
+	z-index: 3;
+
+	li:nth-child(even) {
+		background: #eee;
+	}
+
+	a {
+		padding: 5px 10px;
+		width: 100%;
+		display: block;
+	}
+}
+
+.encounter-menu {
+	background: white;
+}
+
+.combat-time-line {
+	.unit {
+		width: 10px;
+		height: 10px;
+	}
+
+	.enemy {
+		background: red;
+	}
+
+	.operative {
+		background: blue;
+	}
+
+	.timeline {
+		height: 10px;
+		width: 98%;
+		padding: 0 1%;
+		background: cyan;
+	}
+}

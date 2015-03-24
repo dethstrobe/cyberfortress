@@ -9,7 +9,7 @@ angular.module('cyberfortressApp')
 	      this.canvas = parent[0];
 	      this.canvas.width = $window.innerWidth;
 	      this.canvas.height = $window.innerHeight;
-	      this.cx = this.canvas.getContext("2d");
+	      this.cx = this.canvas.getContext('2d');
 
 	      this.touch = {};
 
@@ -31,31 +31,38 @@ angular.module('cyberfortressApp')
 
 		this.mapSelect = function(event) {
 
-			if (display.view.move === true)
-				return display.view.move = false;
+  			if (display.view.move === true){
+          display.view.move = false;
+          return;
+        }
 
 	    	var mapAction = function(location) {
-		    	if (!controls.build)
+		    	if (!controls.build) {
 		    		return;
+          }
 
-		    	map[location.y][location.x]['type'] = controls.build;
+		    	map[location.y][location.x].type = controls.build;
 		    };
 
-		    var mapCheck = function (tileLoc) {
-		    	var tileType = map[tileLoc.y][tileLoc.x]['type'];
+		    var mapCheck = function (tileLoc, currentTile) {
+		    	var tileType = map[tileLoc.y][tileLoc.x].type;
 
-		    	if (!controls.operation || display.view.select === null && tileType === 'Exit') {
+          if (encounter.current()) {
+            return currentTile;
+
+          } else if (!controls.operation || currentTile === null && tileType === 'Exit') {
 		    		return tileLoc;
-		    	} else if (display.view.select !== null) {
+
+		    	} else if (currentTile) {
 			    	var possibleMoves = [
-			    		{x: display.view.select.x -1, y: display.view.select.y}, 
-			    		{x: display.view.select.x +1, y: display.view.select.y}, 
-			    		{x: display.view.select.x, y: display.view.select.y +1}, 
-			    		{x: display.view.select.x, y: display.view.select.y -1}, 
+			    		{x: currentTile.x -1, y: currentTile.y},
+			    		{x: currentTile.x +1, y: currentTile.y},
+			    		{x: currentTile.x, y: currentTile.y +1},
+			    		{x: currentTile.x, y: currentTile.y -1},
 			    	];
 
 					var moveCheck = possibleMoves.map(function(element) {
-						return _.isEqual(tileLoc, element)
+						return _.isEqual(tileLoc, element);
 					});
 					if (moveCheck.indexOf(true) >= 0 && tileType !== 'Wall') {
 						encounter.random();
@@ -63,31 +70,37 @@ angular.module('cyberfortressApp')
 			    	}
 		    	}
 
-		    		return display.view.select;
+		    		return currentTile;
 		    };
 
-			var canvas = event.currentTarget;
+  			var canvas = event.currentTarget;
 
-			var pos = display.relativePos(event, canvas);
+  			var pos = display.relativePos(event, canvas);
 
-			var tileLoc = {
-				x: Math.floor((pos.x - display.view.x) / display.level.scale),
-				y: Math.floor((pos.y - display.view.y) / display.level.scale)
-			};
+  			var tileLoc = {
+  				x: Math.floor((pos.x - display.view.x) / display.level.scale),
+  				y: Math.floor((pos.y - display.view.y) / display.level.scale)
+  			};
 
-			if (display.view.select!== null && tileLoc.y === display.view.select.y && tileLoc.x === display.view.select.x)
-				mapAction(tileLoc);
-			else if (typeof map[tileLoc.y] !== 'undefined' && typeof map[tileLoc.y][tileLoc.x] !== 'undefined')
-				display.view.select = mapCheck(tileLoc);
-			else
-				display.view.select = null;
+  			if (display.view.select && tileLoc.y === display.view.select.y && tileLoc.x === display.view.select.x) {
+  				mapAction(tileLoc);
+
+  			} else if (typeof map[tileLoc.y] !== 'undefined' && typeof map[tileLoc.y][tileLoc.x] !== 'undefined') {
+  				display.view.select = mapCheck(tileLoc, display.view.select);
+
+        } else if (controls.operation) {
+          return;
+
+        } else {
+  				display.view.select = null;
+        }
 
 
-			display.mapRender(map, display);
-			event.preventDefault();
+  			display.mapRender(map, display);
+        event.preventDefault();
 	    };
 
-	    this.mapZoom = function(event) {
+	      this.mapZoom = function(event) {
 	      var pos = display.relativePos(event.originalEvent, this.cx.canvas);
 	      var posFromEdge = {
 	        x: display.view.x - pos.x,
@@ -128,13 +141,13 @@ angular.module('cyberfortressApp')
 	    };
 
 	    this.mapTouchStart = function (event) {
-	      
+
 	      //move map if there is only 1 finger
-	      if (event.targetTouches.length == 1) {
+	      if (event.targetTouches.length === 1) {
 	        var touch = event.targetTouches[0];
 	        display.touch.x = touch.pageX;
 	        display.touch.y = touch.pageY;
-	      } else if (event.targetTouches.length == 2) {
+	      } else if (event.targetTouches.length === 2) {
 	        var touch1 = event.targetTouches[0],
 	            touch2 = event.targetTouches[1];
 	        display.touch.hypotenuse = Math.sqrt(touch1.pageX * touch1.pageX + touch2.pageX * touch2.pageX);
@@ -145,10 +158,10 @@ angular.module('cyberfortressApp')
 	    };
 
 	    this.mapMoveTouch = function (event) {
-	      
+
 
 	      //move map if there is only 1 finger
-	      if (event.targetTouches.length == 1) {
+	      if (event.targetTouches.length === 1) {
 	        var touch = event.targetTouches[0];
 	        var viewPos = display.view;
 
@@ -159,7 +172,7 @@ angular.module('cyberfortressApp')
 	        display.touch.y = touch.pageY;
 
 	      //zoom map if there are 2 fingers
-	      } else if (event.targetTouches.length == 2) {
+      } else if (event.targetTouches.length === 2) {
 	        var touch1 = event.targetTouches[0];
 	        var touch2 = event.targetTouches[1];
 
@@ -254,7 +267,7 @@ angular.module('cyberfortressApp')
 
 	      mapLimits("x", "width");
 	      mapLimits("y", "height");
-	      
+
 	      //clear canvas
 	      display.cx.clearRect(0, 0, display.cx.canvas.width, display.cx.canvas.height);
 
@@ -288,7 +301,7 @@ angular.module('cyberfortressApp')
 
 	        display.cx.strokeRect(location( display.view.select.x, "x"), location(display.view.select.y, "y"), display.level.scale, display.level.scale);
 	      }
-	       
+
 
 		};
     };

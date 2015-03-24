@@ -1,1 +1,43 @@
 <canvas class="encounter-canvas"/>
+<div class="encounter-controls">
+  <div class="container">
+    <div class="row">
+
+      <div class="col-xs-3 encounter-menu-container">
+        <ul class="action-menu list-unstyled encounter-menu">
+          <li><a>Fight</a></li>
+          <li><a>Talk</a></li>
+          <li><a ng-click="currentEncounter(null)">Run</a></li>
+        </ul>
+      </div>
+
+      <div class="col-xs-5 encounter-menu-container">
+        <table class="table encounter-menu">
+          <tr>
+            <td>Street Sam</td>
+            <td>10</td>
+          </tr>
+          <tr>
+            <td>Phychic</td>
+            <td>8</td>
+          </tr>
+          <tr>
+            <td>Face</td>
+            <td>8</td>
+          </tr>
+        </table>
+      </div>
+
+
+
+      <div class="col-xs-4 encounter-menu-container">
+        <div class="combat-time-line encounter-menu">
+          <div class="enemy unit"></div>
+          <div class="timeline"></div>
+          <div class="operative unit"></div>
+        </div>
+      </div>
+
+    </div>
+  </div>
+</div>

@@ -5,7 +5,7 @@ angular.module('cyberfortressApp')
 
     $scope.res = {
       rupee: 100
-    }
+    };
 
     $scope.currentEncounter = encounter.current;
 
@@ -16,12 +16,16 @@ angular.module('cyberfortressApp')
       operation: false//shadowrun
     };
 
+    //set up to test fighting
+    $scope.currentEncounter('Fight');
+    $scope.controls.operation = true;
+
     $scope.readableMap = [
-      "x_xxxx_x",
-      "x      x",
-      "x  tt  x",
-      "x      x",
-      "xxx__xxx"
+      'x_xxxx_x',
+      'x      x',
+      'x  tt  x',
+      'x      x',
+      'xxx__xxx'
     ];
 
     $scope.mapGenerator = function(readableMap) {
@@ -33,7 +37,7 @@ angular.module('cyberfortressApp')
         t : 'Research'
       };
 
-      return $scope.readableMap.map(function(line) {
+      return readableMap.map(function(line) {
         return line.split('').map(function(tileType) {
           return {
             type: tileKey[tileType]
@@ -47,7 +51,7 @@ angular.module('cyberfortressApp')
 
     $scope.operation = function () {
       var op = $scope.controls.operation;
-      if (op == false) {
+      if (op === false) {
         op = true;
         $scope.controls.selectColor = 'red';
       } else {

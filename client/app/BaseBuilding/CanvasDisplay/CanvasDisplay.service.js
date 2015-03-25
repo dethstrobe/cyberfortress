@@ -4,7 +4,7 @@ angular.module('cyberfortressApp')
   .factory('CanvasDisplay', function ($window, encounter) {
     // AngularJS will instantiate a singleton by calling "new" on this function
     return function (parent, level, map, controls) {
-    	var display = this;
+    	  var display = this;
 
 	      this.canvas = parent[0];
 	      this.canvas.width = $window.innerWidth;
@@ -61,16 +61,16 @@ angular.module('cyberfortressApp')
 			    		{x: currentTile.x, y: currentTile.y -1},
 			    	];
 
-					var moveCheck = possibleMoves.map(function(element) {
-						return _.isEqual(tileLoc, element);
-					});
-					if (moveCheck.indexOf(true) >= 0 && tileType !== 'Wall') {
-						encounter.random();
-			    		return tileLoc;
+  					var moveCheck = possibleMoves.map(function(element) {
+  						return _.isEqual(tileLoc, element);
+  					});
+  					if (moveCheck.indexOf(true) >= 0 && tileType !== 'Wall') {
+  						encounter.random();
+  			    		return tileLoc;
 			    	}
 		    	}
 
-		    		return currentTile;
+	    		return currentTile;
 		    };
 
   			var canvas = event.currentTarget;

@@ -4,7 +4,7 @@ angular.module('cyberfortressApp')
   .directive('cyberTouch', function () {
     return {
     	scope: {
-    		cyberTouch: "="
+    		cyberTouch: '='
     	},
       restrict: 'EA',
       link: function (scope, element, attrs) {
@@ -19,7 +19,7 @@ angular.module('cyberfortressApp')
 
         element.on('click', function(event) {
           scope.$apply(scope.cyberTouch.mapSelect(event));
-          
+
         });
 
         element.on('mousedown', function(event) {

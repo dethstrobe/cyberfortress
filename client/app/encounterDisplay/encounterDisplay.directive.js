@@ -11,6 +11,7 @@ angular.module('cyberfortressApp')
         canvas.height = $window.innerHeight - 76;
 
         var cx = canvas.getContext('2d');
+        var timeoutId = null;
 
         scope.encounterDisplayResize = function () {
         	cx.canvas.width = canvas.width = $window.innerWidth;
@@ -30,9 +31,19 @@ angular.module('cyberfortressApp')
           }
         };
 
-        var timeoutId = $interval(function() {
-          updateEncounter(); // update DOM
-        }, 100);
+        scope.$watch(
+          function(scope) {return scope.currentEncounter();},
+          function (newVar) {
+            if(newVar) {
+              startEncounterTimer();
+            }
+          }
+        );
+        var startEncounterTimer = function () {
+          timeoutId = $interval(function() {
+            updateEncounter(); // update DOM
+          }, 100);
+        };
 
         var renderEncounter = function () {
         	cx.fillStyle = 'rgba(255, 0, 0, 0.3)';

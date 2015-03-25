@@ -5,7 +5,7 @@ angular.module('cyberfortressApp')
     return {
       restrict: 'EA',
       link: function ($scope, element, attrs) {
-      	var map = $scope.currentMap
+      	var map = $scope.currentMap;
 
         //this creates the logic for the canvas
   	    $scope.display = new CanvasDisplay(element, $scope.readableMap, map, $scope.controls);

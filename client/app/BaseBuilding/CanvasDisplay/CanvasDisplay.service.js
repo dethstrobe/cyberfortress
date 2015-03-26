@@ -287,9 +287,10 @@ angular.module('cyberfortressApp')
 
 	      //This renders each tile
 	      mapArr.forEach(function(line, y) {
+	      	var yLocation = location(y, "y");
 	        line.forEach(function(tile, x) {
 	          display.cx.fillStyle = tileColorKey[tile.type];
-	          display.cx.fillRect( location(x, "x"), location(y, "y"), display.level.scale, display.level.scale);
+	          display.cx.fillRect( location(x, "x"), yLocation, display.level.scale, display.level.scale);
 	        });
 	      });
 

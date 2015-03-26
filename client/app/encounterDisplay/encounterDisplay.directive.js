@@ -16,38 +16,60 @@ angular.module('cyberfortressApp')
         scope.encounterDisplayResize = function () {
         	cx.canvas.width = canvas.width = $window.innerWidth;
         	cx.canvas.height = canvas.height = $window.innerHeight - 76;
+        	renderEncounter();
         };
 
         var enemy = angular.element('.enemy')[0];
         var hero = angular.element('.operative')[0];
-        var num = 1;
+        var combatTime = 0;
+
+        var characters = encounter.characters();
 
         var updateEncounter = function () {
-          enemy.style.marginLeft = num%100 + '%';
-          hero.style.marginLeft = num%100 + '%';
-          console.log(num++);
           if (!encounter.current()) {
-            $interval.cancel(timeoutId);
+        	combatTime = 0;
+            pauseEncounterTimer();
           }
+          enemy.style.marginLeft = combatTime*characters.opposition[0].reflex%100 + '%';
+          hero.style.marginLeft = combatTime*characters.operatives[0].reflex%100 + '%';
+          combatTime++;
         };
 
         scope.$watch(
           function(scope) {return scope.currentEncounter();},
           function (newVar) {
             if(newVar) {
-              startEncounterTimer();
+            	combatTime = 0;
+            	startEncounterTimer();
             }
           }
         );
+
         var startEncounterTimer = function () {
           timeoutId = $interval(function() {
             updateEncounter(); // update DOM
           }, 100);
         };
 
+        var pauseEncounterTimer = function () {
+        	$interval.cancel(timeoutId);
+        }
+
         var renderEncounter = function () {
-        	cx.fillStyle = 'rgba(255, 0, 0, 0.3)';
-        	cx.fillRect( 20, 20, 200, 100 );
+        	var scale;
+
+        	if (canvas.width/2 < canvas.height-100) {
+        		scale = canvas.width/6;
+        	} else {
+        		scale = (canvas.height-100)/3;
+        	}
+
+        	for (var i = 0; i <= 17; i++) {
+        		cx.fillStyle = '#fff';
+        		cx.fillRect( (scale*i)%(scale*6), Math.floor(i/6)*scale, scale, scale );
+        		cx.strokeRect( (scale*i)%(scale*6), Math.floor(i/6)*scale, scale, scale );
+        		console.log((scale*i)%(scale*6), Math.floor(i/6)*scale);
+        	};
         };
 
         renderEncounter();

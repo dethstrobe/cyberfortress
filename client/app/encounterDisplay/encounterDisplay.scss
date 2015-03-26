@@ -59,3 +59,9 @@
 		background: cyan;
 	}
 }
+
+.enemy,
+.operative {
+	-webkit-transition: margin 0.1s; /* Safari */
+    transition: margin 0.1s;
+}

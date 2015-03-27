@@ -62,7 +62,8 @@ angular.module('cyberfortressApp')
 
         	if (canvas.width/2 < canvas.height-100) {
         		scale = canvas.width/6;
-        		topOffset = (canvas.height)/2 - (scale*2);
+        		if (scale*2 < (canvas.height)/2)
+        			topOffset = (canvas.height)/2 - (scale*2);
         	} else {
         		scale = (canvas.height-100)/3;
         		leftOffset = canvas.width/2 - (scale*3);

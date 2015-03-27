@@ -56,18 +56,22 @@ angular.module('cyberfortressApp')
         }
 
         var renderEncounter = function () {
-        	var scale;
+        	var scale, 
+        		topOffset = 0, 
+        		leftOffset = 0;
 
         	if (canvas.width/2 < canvas.height-100) {
         		scale = canvas.width/6;
+        		topOffset = (canvas.height)/2 - (scale*2);
         	} else {
         		scale = (canvas.height-100)/3;
+        		leftOffset = canvas.width/2 - (scale*3);
         	}
 
         	for (var i = 0; i <= 17; i++) {
         		cx.fillStyle = '#fff';
-        		cx.fillRect( (scale*i)%(scale*6), Math.floor(i/6)*scale, scale, scale );
-        		cx.strokeRect( (scale*i)%(scale*6), Math.floor(i/6)*scale, scale, scale );
+        		cx.fillRect( (scale*i)%(scale*6)+leftOffset, Math.floor(i/6)*scale+topOffset, scale, scale );
+        		cx.strokeRect( (scale*i)%(scale*6)+leftOffset, Math.floor(i/6)*scale+topOffset, scale, scale );
         		console.log((scale*i)%(scale*6), Math.floor(i/6)*scale);
         	};
         };

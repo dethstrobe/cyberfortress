@@ -69,11 +69,21 @@ angular.module('cyberfortressApp')
         		leftOffset = canvas.width/2 - (scale*3);
         	}
 
+        	//loop creates a 6 x 3 grid for encounters
         	for (var i = 0; i <= 17; i++) {
-        		cx.fillStyle = '#fff';
-        		cx.fillRect( (scale*i)%(scale*6)+leftOffset, Math.floor(i/6)*scale+topOffset, scale, scale );
-        		cx.strokeRect( (scale*i)%(scale*6)+leftOffset, Math.floor(i/6)*scale+topOffset, scale, scale );
-        		console.log((scale*i)%(scale*6), Math.floor(i/6)*scale);
+        		//this is the x and y cordinates
+	        	var x = (scale*i)%(scale*6)+leftOffset;
+	        	var y = Math.floor(i/6)*scale+topOffset;
+
+	        	//set color of tile. red on left, blue on right
+        		if (Math.floor(i/3)%2)
+        			cx.fillStyle = '#ddf';
+        		else
+        			cx.fillStyle = '#fdd';
+
+        		cx.fillRect( x, y, scale, scale );
+        		cx.strokeRect( x, y, scale, scale );
+        		console.log(x, y);
         	};
         };
 

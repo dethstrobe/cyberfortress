@@ -5,7 +5,7 @@
 
       <div class="col-xs-3 encounter-menu-container">
         <ul class="action-menu list-unstyled encounter-menu">
-          <li><a>Fight</a></li>
+          <li><a ng-click="encounterActions.fight(controls.action.attacker, controls.action.defender)">Fight</a></li>
           <li><a>Talk</a></li>
           <li><a ng-click="currentEncounter(null)">Run</a></li>
         </ul>
@@ -14,8 +14,8 @@
       <div class="col-xs-5 encounter-menu-container">
         <table class="table encounter-menu">
           <tr>
-            <td>Street Sam</td>
-            <td>10</td>
+            <td>{{characters.operatives[0].name}}</td>
+            <td>{{characters.operatives[0].hp}}</td>
           </tr>
           <tr>
             <td>Phychic</td>

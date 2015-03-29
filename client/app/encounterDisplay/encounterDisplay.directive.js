@@ -19,36 +19,47 @@ angular.module('cyberfortressApp')
         	renderEncounter();
         };
 
-        var enemy = angular.element('.enemy')[0];
-        var hero = angular.element('.operative')[0];
+        var characterIcons = {
+        	opposition : angular.element('.enemy')[0],
+        	operatives : angular.element('.operative')[0]
+    	};
         var combatTime = 0;
 
         var characters = encounter.characters();
 
+
         var updateEncounter = function () {
+          //if encounter is null, then stop the encounter
           if (!encounter.current()) {
         	combatTime = 0;
             pauseEncounterTimer();
           }
-          function characterTime (characterSpeed) {
-          	return (combatTime*(characterSpeed.reflex+characterSpeed.intellegence))/3%100
+
+          //finds out how fast the character is
+          var setCharacterTime = function  (character) {
+          	return (combatTime*(character.reflex+character.intellegence))/3%100
           }
-          var enemyTime = characterTime(characters.opposition[0]);
-          var heroTime = characterTime(characters.operatives[0]);
-          enemy.style.marginLeft = enemyTime + '%';
-          hero.style.marginLeft = heroTime + '%';
+
+          //holds each character's speed
+          var characterTime = {};
 
           var actionPhase = function() {
-	          if (heroTime+(characters.operatives[0].reflex+characters.operatives[0].intellegence) / 3 >= 100 ) {
+	          if (characterTime.operatives+(characters.operatives[0].reflex+characters.operatives[0].intellegence) / 3 >= 100 ) {
 				pauseEncounterTimer();
 				scope.controls.action.attacker = characters.operatives[0];
 				scope.controls.action.defender = characters.opposition[0];
 	          }
           };
 
+          for (var sides in characters) {
+          	characterTime[sides] = setCharacterTime(characters[sides][0]);
+          	characterIcons[sides].style.marginLeft = characterTime[sides] + '%';
+          }
+
           actionPhase();
           combatTime++;
         };
+
 
         scope.$watch(
           function(scope) {return scope.currentEncounter();},
@@ -100,6 +111,13 @@ angular.module('cyberfortressApp')
         		cx.strokeRect( x, y, scale, scale );
         	};
         };
+
+        scope.encounterActions = {};
+
+        scope.encounterActions.fight = function (attacker, defender) {
+        	encounter.fight(attacker, defender);
+        	startEncounterTimer();
+        }
 
         renderEncounter();
 

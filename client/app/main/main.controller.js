@@ -7,6 +7,8 @@ angular.module('cyberfortressApp')
       rupee: 100
     };
 
+    $scope.characters = encounter.characters();
+
     $scope.currentEncounter = encounter.current;
 
     $scope.controls = {

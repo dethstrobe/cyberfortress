@@ -30,8 +30,23 @@ angular.module('cyberfortressApp')
         	combatTime = 0;
             pauseEncounterTimer();
           }
-          enemy.style.marginLeft = combatTime*characters.opposition[0].reflex%100 + '%';
-          hero.style.marginLeft = combatTime*characters.operatives[0].reflex%100 + '%';
+          function characterTime (characterSpeed) {
+          	return (combatTime*(characterSpeed.reflex+characterSpeed.intellegence))/3%100
+          }
+          var enemyTime = characterTime(characters.opposition[0]);
+          var heroTime = characterTime(characters.operatives[0]);
+          enemy.style.marginLeft = enemyTime + '%';
+          hero.style.marginLeft = heroTime + '%';
+
+          var actionPhase = function() {
+	          if (heroTime+(characters.operatives[0].reflex+characters.operatives[0].intellegence) / 3 >= 100 ) {
+				pauseEncounterTimer();
+				scope.controls.action.attacker = characters.operatives[0];
+				scope.controls.action.defender = characters.opposition[0];
+	          }
+          };
+
+          actionPhase();
           combatTime++;
         };
 
@@ -83,7 +98,6 @@ angular.module('cyberfortressApp')
 
         		cx.fillRect( x, y, scale, scale );
         		cx.strokeRect( x, y, scale, scale );
-        		console.log(x, y);
         	};
         };
 

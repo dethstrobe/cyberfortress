@@ -14,23 +14,37 @@ angular.module('cyberfortressApp')
       operatives : [
         {
           name: 'Street Sam',
-          hp: 10,
-          sp: 3,
+          hp: 11,
+          sp: 4,
           strength: 5,
-          reflex: 5,
-          intellegence: 2,
-          personality: 1
+          reflex: 6,
+          intellegence: 3,
+          personality: 1,
+          skills: {
+            melee: 5,
+            range: 4,
+            hacking: 0,
+            psi: 0,
+            talk: 0
+          }
         }
       ],
       opposition : [
         {
           name: 'Guard',
           hp: 8,
-          sp: 5,
+          sp: 7,
           strength: 4,
           reflex: 4,
-          intellegence: 3,
-          personality: 2
+          intellegence: 4,
+          personality: 3,
+          skills: {
+            melee: 5,
+            range: 4,
+            hacking: 0,
+            psi: 0,
+            talk: 0
+          }
         }
       ]
     };
@@ -54,8 +68,24 @@ angular.module('cyberfortressApp')
         return currentEncounter;
       },
 
-      characters: function () {
+      characters : function () {
         return characters;
+      },
+
+      fight : function (attacker, defender) {
+        var attackRoll = Math.ceil(Math.random()*10);
+        var defendRoll = Math.ceil(Math.random()*10);
+        var attackMod = attacker.reflex + attacker.skills.melee + attackRoll;
+        var defendMod = defender.reflex + defender.intellegence + defendRoll;
+
+        if (attackMod > defendMod) {
+          var bonusDamage = attackMod - defendMod,
+              damage = attacker.strength + bonusDamage - defender.strength;
+          defender.hp -= damage;
+          console.log(damage, defender.hp);
+        } else {
+          console.log("Attack Missed");
+        }
       }
 
     };

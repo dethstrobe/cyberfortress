@@ -13,7 +13,11 @@ angular.module('cyberfortressApp')
       menu: true,//hide menu
       selectColor: 'gold',//the color of the select border
       build: null,//replace tile
-      operation: false//shadowrun
+      operation: false,//shadowrun
+      action: {//targets of actions
+        attacker: null,
+        defender: null
+      }
     };
 
     //set up to test fighting

@@ -26,7 +26,9 @@ angular.module('cyberfortressApp')
             hacking: 0,
             psi: 0,
             talk: 0
-          }
+          },
+          speed: 0,
+          speedMod: 0
         }
       ],
       opposition : [
@@ -44,13 +46,16 @@ angular.module('cyberfortressApp')
             hacking: 0,
             psi: 0,
             talk: 0
-          }
+          },
+          speed: 0,
+          speedMod: 0
         }
       ]
     };
 
     var actions = {
       Melee: function (attacker, attackRoll, defender, defendRoll) {
+        console.log(attacker);
         var attackMod = attacker.reflex + attacker.skills.melee + attackRoll;
         var defendMod = defender.reflex + defender.intellegence + defendRoll;
 

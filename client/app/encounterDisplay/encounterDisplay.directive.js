@@ -23,24 +23,30 @@ angular.module('cyberfortressApp')
 
         var characters = encounter.characters();
 
+		//finds out how fast the character is
+		var setCharacterTime = function  (character) {
+			//measurement of how fast a character is
+			return character.reflex+character.intellegence/( Math.random()* (6 - 3) );
+		}
+
         var setUpEncounter = function() {
 
         	for (var sides in characters) {
+
         		characters[sides].forEach(function(element, index, array) {
         			var characterIcon = angular.element('<div/>')
         				.addClass( "unit "+index );
 
         			angular.element('.'+sides).append(characterIcon);
+
+        			//this creates a character's speed attribute
+        			characters[sides][index].speed = setCharacterTime(characters[sides][index]);
         		});
         	}
         };
 
         setUpEncounter();
 
-        var characterIcons = {
-        	opposition : angular.element('.opposition').children(),
-        	operatives : angular.element('.operatives').children()
-    	};
 
         var updateEncounter = function () {
           //if encounter is null, then stop the encounter
@@ -49,33 +55,43 @@ angular.module('cyberfortressApp')
             pauseEncounterTimer();
           }
 
-          var characterTimeUnit = character.reflex+character.intellegence/3;
-
-          //finds out how fast the character is
-          var setCharacterTime = function  (character) {
-          	return combatTime*characterTimeUnit%100
-          }
-
-          //holds each character's speed
-          var characterTime = {};
-
           var actionPhase = function() {
-          	
-	          if (characterTime.operatives+characterTimeUnit >= 100 ) {
-				pauseEncounterTimer();
-				scope.controls.action.attacker = characters.operatives[0];
-				scope.controls.action.defender = characters.opposition[0];
-	          } else if (characterTime.opposition+characterTimeUnit >= 100) {
-	          	encounter.action(characters.opposition[0], characters.operatives[0], 'Melee');
-	          }
+
+          	for (var sides in characters) {
+
+          		characters[sides].forEach(function (element, index, array) {
+
+          			var characterTime = element.speed * (combatTime + element.speedMod);
+          			var characterIcon = angular.element('.'+sides+' .'+index);
+
+          			if (characterTime > 100) {
+          				if (sides === 'operatives') {
+          					pauseEncounterTimer();
+          					scope.controls.action.attacker = element;
+
+          					//this needs to be replaced later with a way for the player to select defender
+          					scope.controls.action.defender = characters.opposition[0];
+
+          				} else {
+          					//needs to be refactored to select better defender
+          					encounter.action(element, characters.operatives[0], 'Melee');
+        					element.speed = setCharacterTime(element);
+          				}
+          				
+      					element.speedMod = -combatTime;
+          				characterIcon.css('margin-left', '100%');
+
+          			} else {
+          				characterIcon.css('margin-left', characterTime+'%');
+          			}
+
+          		});
+
+          	}
           };
 
-          for (var sides in characters) {
-          	characterTime[sides] = setCharacterTime(characters[sides][0]);
-          	characterIcons[sides].style.marginLeft = characterTime[sides] + '%';
-          }
-
           actionPhase();
+
           combatTime++;
         };
 
@@ -136,6 +152,7 @@ angular.module('cyberfortressApp')
         scope.encounterActions.action = function (attacker, defender, actionType) {
         	encounter.action(attacker, defender, actionType);
         	startEncounterTimer();
+        	attacker.speed = setCharacterTime(attacker);
         }
 
         renderEncounter();

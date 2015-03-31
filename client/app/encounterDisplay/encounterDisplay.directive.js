@@ -19,14 +19,28 @@ angular.module('cyberfortressApp')
         	renderEncounter();
         };
 
-        var characterIcons = {
-        	opposition : angular.element('.opposition')[0],
-        	operatives : angular.element('.operatives')[0]
-    	};
         var combatTime = 0;
 
         var characters = encounter.characters();
 
+        var setUpEncounter = function() {
+
+        	for (var sides in characters) {
+        		characters[sides].forEach(function(element, index, array) {
+        			var characterIcon = angular.element('<div/>')
+        				.addClass( "unit "+index );
+
+        			angular.element('.'+sides).append(characterIcon);
+        		});
+        	}
+        };
+
+        setUpEncounter();
+
+        var characterIcons = {
+        	opposition : angular.element('.opposition').children(),
+        	operatives : angular.element('.operatives').children()
+    	};
 
         var updateEncounter = function () {
           //if encounter is null, then stop the encounter
@@ -35,21 +49,23 @@ angular.module('cyberfortressApp')
             pauseEncounterTimer();
           }
 
+          var characterTimeUnit = character.reflex+character.intellegence/3;
+
           //finds out how fast the character is
           var setCharacterTime = function  (character) {
-          	return (combatTime*(character.reflex+character.intellegence))/3%100
+          	return combatTime*characterTimeUnit%100
           }
 
           //holds each character's speed
           var characterTime = {};
 
           var actionPhase = function() {
-          	var slowDownCharSpeed = 3;
-	          if (characterTime.operatives+(characters.operatives[0].reflex+characters.operatives[0].intellegence) / slowDownCharSpeed >= 100 ) {
+          	
+	          if (characterTime.operatives+characterTimeUnit >= 100 ) {
 				pauseEncounterTimer();
 				scope.controls.action.attacker = characters.operatives[0];
 				scope.controls.action.defender = characters.opposition[0];
-	          } else if (characterTime.opposition+(characters.opposition[0].reflex+characters.opposition[0].intellegence) / slowDownCharSpeed >= 100) {
+	          } else if (characterTime.opposition+characterTimeUnit >= 100) {
 	          	encounter.action(characters.opposition[0], characters.operatives[0], 'Melee');
 	          }
           };

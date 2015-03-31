@@ -11,6 +11,8 @@ angular.module('cyberfortressApp')
 
     $scope.currentEncounter = encounter.current;
 
+    $scope.actionList = encounter.actionList();
+
     $scope.controls = {
       menu: true,//hide menu
       selectColor: 'gold',//the color of the select border

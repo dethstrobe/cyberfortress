@@ -49,6 +49,23 @@ angular.module('cyberfortressApp')
       ]
     };
 
+    var actions = {
+      Melee: function (attacker, attackRoll, defender, defendRoll) {
+        var attackMod = attacker.reflex + attacker.skills.melee + attackRoll;
+        var defendMod = defender.reflex + defender.intellegence + defendRoll;
+
+        if (attackMod > defendMod) {
+          var bonusDamage = attackMod - defendMod,
+              damage = attacker.strength + bonusDamage - defender.strength;
+          if (damage > 0)
+            return defender.hp -= damage;
+
+        } else {
+          console.log("Attack Missed");
+        }
+      }
+    }
+
     // Public API here
     return {
       random : function () {
@@ -72,20 +89,18 @@ angular.module('cyberfortressApp')
         return characters;
       },
 
-      fight : function (attacker, defender) {
+      action : function (attacker, defender, actionType) {
         var attackRoll = Math.ceil(Math.random()*10);
         var defendRoll = Math.ceil(Math.random()*10);
-        var attackMod = attacker.reflex + attacker.skills.melee + attackRoll;
-        var defendMod = defender.reflex + defender.intellegence + defendRoll;
+        console.log(actionType);
+        
+        actions[actionType] (attacker, attackRoll, defender, defendRoll);
 
-        if (attackMod > defendMod) {
-          var bonusDamage = attackMod - defendMod,
-              damage = attacker.strength + bonusDamage - defender.strength;
-          defender.hp -= damage;
-          console.log(damage, defender.hp);
-        } else {
-          console.log("Attack Missed");
-        }
+        console.log(defender.hp);
+      },
+
+      actionList : function () {
+        return Object.keys(actions);
       }
 
     };

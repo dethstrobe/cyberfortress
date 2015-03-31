@@ -40,28 +40,23 @@
 
 .combat-time-line {
 	.unit {
-		width: 10px;
-		height: 10px;
+		width: 45px;
+		height: 45px;
+		-webkit-transition: margin 0.01s; /* Safari */
+	    transition: margin 0.1s;
 	}
 
-	.enemy {
+	.opposition {
 		background: red;
 	}
 
-	.operative {
+	.operatives {
 		background: blue;
 	}
 
 	.timeline {
 		height: 10px;
-		width: 98%;
-		padding: 0 1%;
+		width: 100%;
 		background: cyan;
 	}
-}
-
-.enemy,
-.operative {
-	-webkit-transition: margin 0.1s; /* Safari */
-    transition: margin 0.1s;
 }

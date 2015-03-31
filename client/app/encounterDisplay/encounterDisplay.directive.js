@@ -20,8 +20,8 @@ angular.module('cyberfortressApp')
         };
 
         var characterIcons = {
-        	opposition : angular.element('.enemy')[0],
-        	operatives : angular.element('.operative')[0]
+        	opposition : angular.element('.opposition')[0],
+        	operatives : angular.element('.operatives')[0]
     	};
         var combatTime = 0;
 
@@ -44,10 +44,13 @@ angular.module('cyberfortressApp')
           var characterTime = {};
 
           var actionPhase = function() {
-	          if (characterTime.operatives+(characters.operatives[0].reflex+characters.operatives[0].intellegence) / 3 >= 100 ) {
+          	var slowDownCharSpeed = 3;
+	          if (characterTime.operatives+(characters.operatives[0].reflex+characters.operatives[0].intellegence) / slowDownCharSpeed >= 100 ) {
 				pauseEncounterTimer();
 				scope.controls.action.attacker = characters.operatives[0];
 				scope.controls.action.defender = characters.opposition[0];
+	          } else if (characterTime.opposition+(characters.opposition[0].reflex+characters.opposition[0].intellegence) / slowDownCharSpeed >= 100) {
+	          	encounter.action(characters.opposition[0], characters.operatives[0], 'Melee');
 	          }
           };
 
@@ -114,8 +117,8 @@ angular.module('cyberfortressApp')
 
         scope.encounterActions = {};
 
-        scope.encounterActions.fight = function (attacker, defender) {
-        	encounter.fight(attacker, defender);
+        scope.encounterActions.action = function (attacker, defender, actionType) {
+        	encounter.action(attacker, defender, actionType);
         	startEncounterTimer();
         }
 

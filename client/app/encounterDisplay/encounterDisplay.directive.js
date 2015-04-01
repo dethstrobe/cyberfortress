@@ -39,8 +39,8 @@ angular.module('cyberfortressApp')
 	        	}
 	        	
 	       	},
-	       	center: function(dimension, offset) {
-	       		return display.canvas[dimension]/2 - (display.level[dimension] * display.level.scale / 2) + offset;
+	       	center: function(dimension) {
+	       		return display.canvas[dimension]/2 - (display.level[dimension] * display.level.scale / 2);
 	       	}
         };
 
@@ -50,7 +50,7 @@ angular.module('cyberfortressApp')
        		display, 
        		display.level.scale, 
        		{x:0, y:0}, 
-       		{x: findDisplay.center('width', 0), y: findDisplay.center('height', -100)}
+       		{x: findDisplay.center('width'), y: findDisplay.center('height')}
        	);
 
        	display.mapRender(map, display);
@@ -65,7 +65,7 @@ angular.module('cyberfortressApp')
 	       		display, 
 	       		display.level.scale, 
 	       		{x:0, y:0}, 
-	       		{x: findDisplay.center('width', 0), y: findDisplay.center('height', -100)}
+	       		{x: findDisplay.center('width'), y: findDisplay.center('height')}
 	       	);
 
         	display.mapRender(map, display);

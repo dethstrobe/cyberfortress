@@ -1,8 +1,12 @@
 .encounter-display {
 	position: relative;
 	z-index: 1;
-	background: rgba(0,0,0,0.3);
 	margin-top: 20px;
+}
+
+.encounter-canvas {
+	background: rgba(0,0,0,0.3);
+	position: fixed;
 }
 
 .encounter-menu-container {
@@ -13,8 +17,8 @@
 }
 
 .encounter-controls {
-	position: absolute;
-  bottom: 0;
+	position: fixed;
+	bottom: 0;
 	width: 100%;
 }
 

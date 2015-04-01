@@ -1,22 +1,55 @@
 'use strict';
 
 angular.module('cyberfortressApp')
-  .directive('encounterDisplay', function ($window, $interval, encounter) {
+  .directive('encounterDisplay', function ($window, $interval, encounter, CanvasDisplay) {
     return {
       templateUrl: 'app/encounterDisplay/encounterDisplay.html',
       restrict: 'EA',
       link: function (scope) {
-      	var canvas = angular.element('.encounter-canvas')[0];
-        canvas.width = $window.innerWidth;
-        canvas.height = $window.innerHeight - 76;
+      	// var canvas = angular.element('.encounter-canvas')[0];
+       //  canvas.width = $window.innerWidth;
+       //  canvas.height = $window.innerHeight - 76;
 
-        var cx = canvas.getContext('2d');
-        var timeoutId = null;
+       //  var cx = canvas.getContext('2d');
+
+       //  scope.encounterDisplayResize = function () {
+       //  	cx.canvas.width = canvas.width = $window.innerWidth;
+       //  	cx.canvas.height = canvas.height = $window.innerHeight - 76;
+       //  	renderEncounter();
+       //  };
+
+		var encounterMap = [
+			'pppccc',
+			'pppccc',
+			'pppccc'
+		]
+
+		var map = scope.mapGenerator(encounterMap);
+
+       	var display = new CanvasDisplay(angular.element('.encounter-canvas'), encounterMap, map, scope.controls);
+
+       	var displayScale = function (display) {
+       		var canvas = display.canvas;
+
+       		if (canvas.width/2 < canvas.height-100) {
+        		return display.view.width / 8;
+        	} else {
+        		return (canvas.height-200)/3;
+        	}
+        	
+       	};
+
+       	display.zoomOnCenter(display, display.view.width / 8, {x:0, y:0}, {x:0, y: 0});
+
+       	display.mapRender(map, display);
 
         scope.encounterDisplayResize = function () {
-        	cx.canvas.width = canvas.width = $window.innerWidth;
-        	cx.canvas.height = canvas.height = $window.innerHeight - 76;
-        	renderEncounter();
+        	display.view.width = display.cx.canvas.width = display.canvas.width = $window.innerWidth;
+         	display.view.height = display.cx.canvas.height = display.canvas.height = $window.innerHeight;
+
+         	display.level.scale = displayScale(display);
+
+        	display.mapRender(map, display);
         };
 
         var combatTime = 0;
@@ -106,6 +139,8 @@ angular.module('cyberfortressApp')
           }
         );
 
+        var timeoutId = null;
+
         var startEncounterTimer = function () {
           timeoutId = $interval(function() {
             updateEncounter(); // update DOM
@@ -116,36 +151,38 @@ angular.module('cyberfortressApp')
         	$interval.cancel(timeoutId);
         }
 
-        var renderEncounter = function () {
-        	var scale, 
-        		topOffset = 0, 
-        		leftOffset = 0;
+        // var renderEncounter = function () {
+        // 	var scale, 
+        // 		topOffset = 0, 
+        // 		leftOffset = 0;
 
-        	if (canvas.width/2 < canvas.height-100) {
-        		scale = canvas.width/6;
-        		if (scale*2 < (canvas.height)/2)
-        			topOffset = (canvas.height)/2 - (scale*2);
-        	} else {
-        		scale = (canvas.height-100)/3;
-        		leftOffset = canvas.width/2 - (scale*3);
-        	}
+        // 	if (canvas.width/2 < canvas.height-100) {
+        // 		scale = canvas.width/6;
+        // 		if (scale*2 < (canvas.height)/2)
+        // 			topOffset = (canvas.height)/2 - (scale*2);
+        // 	} else {
+        // 		scale = (canvas.height-100)/3;
+        // 		leftOffset = canvas.width/2 - (scale*3);
+        // 	}
 
-        	//loop creates a 6 x 3 grid for encounters
-        	for (var i = 0; i <= 17; i++) {
-        		//this is the x and y cordinates
-	        	var x = (scale*i)%(scale*6)+leftOffset;
-	        	var y = Math.floor(i/6)*scale+topOffset;
+        // 	//loop creates a 6 x 3 grid for encounters
+        // 	for (var i = 0; i <= 17; i++) {
+        // 		//this is the x and y cordinates
+	       //  	var x = (scale*i)%(scale*6)+leftOffset;
+	       //  	var y = Math.floor(i/6)*scale+topOffset;
 
-	        	//set color of tile. red on left, blue on right
-        		if (Math.floor(i/3)%2)
-        			cx.fillStyle = '#ddf';
-        		else
-        			cx.fillStyle = '#fdd';
+	       //  	//set color of tile. red on left, blue on right
+        // 		if (Math.floor(i/3)%2)
+        // 			cx.fillStyle = '#ddf';
+        // 		else
+        // 			cx.fillStyle = '#fdd';
 
-        		cx.fillRect( x, y, scale, scale );
-        		cx.strokeRect( x, y, scale, scale );
-        	};
-        };
+        // 		cx.fillRect( x, y, scale, scale );
+        // 		cx.strokeRect( x, y, scale, scale );
+        // 	};
+        // };
+
+        //renderEncounter();
 
         scope.encounterActions = {};
 
@@ -155,7 +192,6 @@ angular.module('cyberfortressApp')
         	attacker.speed = setCharacterTime(attacker);
         }
 
-        renderEncounter();
 
 
       }

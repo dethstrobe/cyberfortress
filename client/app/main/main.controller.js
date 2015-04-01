@@ -42,7 +42,9 @@ angular.module('cyberfortressApp')
         x : 'Wall',
         _ : 'Exit',
         ' ' : 'Empty',
-        t : 'Research'
+        t : 'Research',
+        p : 'Opposition',
+        c : 'Operatives'
       };
 
       return readableMap.map(function(line) {

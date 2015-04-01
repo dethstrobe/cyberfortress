@@ -32,14 +32,14 @@ angular.module('cyberfortressApp')
 		this.mapSelect = function(event) {
 
   			if (display.view.move === true){
-          display.view.move = false;
-          return;
-        }
+	          display.view.move = false;
+	          return;
+	        }
 
 	    	var mapAction = function(location) {
 		    	if (!controls.build) {
 		    		return;
-          }
+	            }
 
 		    	map[location.y][location.x].type = controls.build;
 		    };
@@ -47,10 +47,10 @@ angular.module('cyberfortressApp')
 		    var mapCheck = function (tileLoc, currentTile) {
 		    	var tileType = map[tileLoc.y][tileLoc.x].type;
 
-          if (encounter.current()) {
-            return currentTile;
+          		if (encounter.current()) {
+            		return currentTile;
 
-          } else if (!controls.operation || currentTile === null && tileType === 'Exit') {
+          		} else if (!controls.operation || currentTile === null && tileType === 'Exit') {
 		    		return tileLoc;
 
 		    	} else if (currentTile) {
@@ -282,7 +282,9 @@ angular.module('cyberfortressApp')
 	        Empty: 'white',
 	        Research: 'green',
 	        Turret: 'purple',
-	        'Pressure Plate': 'cyan'
+	        'Pressure Plate': 'cyan',
+	        Operatives: '#ddf',
+	        Opposition: '#fdd'
 	      }
 
 	      //This renders each tile

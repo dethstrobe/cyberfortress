@@ -28,18 +28,30 @@ angular.module('cyberfortressApp')
 
        	var display = new CanvasDisplay(angular.element('.encounter-canvas'), encounterMap, map, scope.controls);
 
-       	var displayScale = function (display) {
-       		var canvas = display.canvas;
+       	var findDisplay = {
+       		scale: function (display) {
+	       		var canvas = display.canvas;
 
-       		if (canvas.width/2 < canvas.height-100) {
-        		return display.view.width / 8;
-        	} else {
-        		return (canvas.height-200)/3;
-        	}
-        	
-       	};
+	       		if (canvas.width/2 < canvas.height-200) {
+	        		return display.view.width / 6;
+	        	} else {
+	        		return (canvas.height-200)/3;
+	        	}
+	        	
+	       	},
+	       	center: function(dimension, offset) {
+	       		return display.canvas[dimension]/2 - (display.level[dimension] * display.level.scale / 2) + offset;
+	       	}
+        };
 
-       	display.zoomOnCenter(display, display.view.width / 8, {x:0, y:0}, {x:0, y: 0});
+       	display.level.scale = findDisplay.scale(display);
+
+       	display.zoomOnCenter(
+       		display, 
+       		display.level.scale, 
+       		{x:0, y:0}, 
+       		{x: findDisplay.center('width', 0), y: findDisplay.center('height', -100)}
+       	);
 
        	display.mapRender(map, display);
 
@@ -47,7 +59,14 @@ angular.module('cyberfortressApp')
         	display.view.width = display.cx.canvas.width = display.canvas.width = $window.innerWidth;
          	display.view.height = display.cx.canvas.height = display.canvas.height = $window.innerHeight;
 
-         	display.level.scale = displayScale(display);
+         	display.level.scale = findDisplay.scale(display);
+
+         	display.zoomOnCenter(
+	       		display, 
+	       		display.level.scale, 
+	       		{x:0, y:0}, 
+	       		{x: findDisplay.center('width', 0), y: findDisplay.center('height', -100)}
+	       	);
 
         	display.mapRender(map, display);
         };

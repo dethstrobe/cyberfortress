@@ -7,17 +7,20 @@ angular.module('cyberfortressApp')
       restrict: 'EA',
       link: function (scope) {
 
-      	var charCanvas = angular.element('.character-canvas')[0];
-      	charCanvas.width = $window.innerWidth;
-      	charCanvas.height = $window.innerHeight;
-      	var charCX = charCanvas.getContext('2d');
+      	function charCanvasDisplay() {
+      		var canvas = angular.element('.character-canvas')[0];
+	      	canvas.width = $window.innerWidth;
+	      	canvas.height = $window.innerHeight;
+	      	var cx = canvas.getContext('2d');
 
-      	function charRender(cx) {
-      		cx.fillStyle = '#f00';
-      		cx.fillRect(0, 0, 100, 100);
-      	}
+	      	this.render = function () {
+	      		cx.fillStyle = '#f00';
+	      		cx.fillRect(0, 0, 100, 100);
+	      	}
+      	};
 
-      	charRender(charCX);
+      	var charDisplay = new charCanvasDisplay();
+      	charDisplay.render();
 
 		var encounterMap = [
 			'pppccc',
@@ -40,8 +43,8 @@ angular.module('cyberfortressApp')
 	        	}
 	        	
 	       	},
-	       	center: function(dimension, offset) {
-	       		return display.canvas[dimension]/2 - (display.level[dimension] * display.level.scale / 2) + offset;
+	       	center: function(canvas, level, dimension, offset) {
+	       		return canvas[dimension]/2 - (level[dimension] * level.scale / 2) + offset;
 	       	}
         };
 
@@ -51,15 +54,15 @@ angular.module('cyberfortressApp')
        		display, 
        		display.level.scale, 
        		{x:0, y:0}, 
-       		{x: findDisplay.center('width', 0), y: findDisplay.center('height', -18)}
+       		{x: findDisplay.center(display.canvas, display.level, 'width', 0), y: findDisplay.center(display.canvas, display.level, 'height', -18)}
        	);
 
        	display.mapRender(map, display);
 
 
         scope.encounterDisplayResize = function () {
-        	charCX.canvas.width = display.view.width = display.cx.canvas.width = display.canvas.width = $window.innerWidth;
-         	charCX.canvas.height = display.view.height = display.cx.canvas.height = display.canvas.height = $window.innerHeight;
+        	charCX.canvas.width = display.view.width = display.canvas.width = $window.innerWidth;
+         	charCX.canvas.height = display.view.height = display.canvas.height = $window.innerHeight;
 
          	display.level.scale = findDisplay.scale(display);
 
@@ -67,7 +70,7 @@ angular.module('cyberfortressApp')
 	       		display, 
 	       		display.level.scale, 
 	       		{x:0, y:0}, 
-	       		{x: findDisplay.center('width', 0), y: findDisplay.center('height', -20)}
+	       		{x: findDisplay.center(display.canvas, display.level, 'width', 0), y: findDisplay.center(display.canvas, display.level, 'height', -20)}
 	       	);
 
         	display.mapRender(map, display);

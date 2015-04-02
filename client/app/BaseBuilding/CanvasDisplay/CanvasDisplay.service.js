@@ -201,6 +201,8 @@ angular.module('cyberfortressApp')
 	      display.mapRender(map, display);
 	    };
 
+
+
 	    this.mapMove = function(event) {
 
 	     if (event.which == 1) {
@@ -237,6 +239,8 @@ angular.module('cyberfortressApp')
 	      }
 	    };
 
+
+
 	    this.mapRender = function (mapArr, display) {
 
 	      //this function restricts how far a map can scroll
@@ -269,7 +273,7 @@ angular.module('cyberfortressApp')
 	      mapLimits("y", "height");
 
 	      //clear canvas
-	      display.cx.clearRect(0, 0, display.cx.canvas.width, display.cx.canvas.height);
+	      display.cx.clearRect(0, 0, display.canvas.width, display.canvas.height);
 
 	      //this function finds the location of each tile
 	      var location = function (arrLoc, displayLoc) {
@@ -304,7 +308,6 @@ angular.module('cyberfortressApp')
 
 	        display.cx.strokeRect(location( display.view.select.x, "x"), location(display.view.select.y, "y"), display.level.scale, display.level.scale);
 	      }
-
 
 		};
     };

@@ -15,7 +15,6 @@ angular.module('cyberfortressApp')
       	function charRender(cx) {
       		cx.fillStyle = '#f00';
       		cx.fillRect(0, 0, 100, 100);
-
       	}
 
       	charRender(charCX);
@@ -57,9 +56,10 @@ angular.module('cyberfortressApp')
 
        	display.mapRender(map, display);
 
+
         scope.encounterDisplayResize = function () {
-        	display.view.width = display.cx.canvas.width = display.canvas.width = $window.innerWidth;
-         	display.view.height = display.cx.canvas.height = display.canvas.height = $window.innerHeight;
+        	charCX.canvas.width = display.view.width = display.cx.canvas.width = display.canvas.width = $window.innerWidth;
+         	charCX.canvas.height = display.view.height = display.cx.canvas.height = display.canvas.height = $window.innerHeight;
 
          	display.level.scale = findDisplay.scale(display);
 
@@ -71,6 +71,7 @@ angular.module('cyberfortressApp')
 	       	);
 
         	display.mapRender(map, display);
+        	charRender(charCX);
         };
 
         var combatTime = 0;
@@ -83,11 +84,17 @@ angular.module('cyberfortressApp')
 			return character.reflex+character.intellegence/( Math.random()* (6 - 3) );
 		}
 
+		function characterLoop(characters, loopFn) {
+			for (var sides in characters) {
+        		characters[sides].forEach(loopFn, sides);
+        	}
+		};
+
         var setUpEncounter = function() {
 
-        	for (var sides in characters) {
-
-        		characters[sides].forEach(function(element, index, array) {
+        	characterLoop(characters, 
+        		function(element, index, array) {
+        			var sides = this;
         			var characterIcon = angular.element('<div/>')
         				.addClass( "unit "+index );
 
@@ -95,8 +102,8 @@ angular.module('cyberfortressApp')
 
         			//this sets a character's speed attribute
         			characters[sides][index].speed = setCharacterTime(characters[sides][index]);
-        		});
-        	}
+        		}
+        	);
         };
 
         setUpEncounter();
@@ -111,9 +118,9 @@ angular.module('cyberfortressApp')
 
           var actionPhase = function() {
 
-          	for (var sides in characters) {
-
-          		characters[sides].forEach(function (element, index, array) {
+          	characterLoop(characters, 
+          		function (element, index, array) {
+          			var sides = this;
 
           			var characterTime = element.speed * (combatTime + element.speedMod);
           			var characterIcon = angular.element('.'+sides+' .'+index);
@@ -139,9 +146,9 @@ angular.module('cyberfortressApp')
           				characterIcon.css('margin-left', characterTime+'%');
           			}
 
-          		});
-
-          	}
+          		}
+          	);
+          	
           };
 
           actionPhase();

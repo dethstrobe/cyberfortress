@@ -5,9 +5,16 @@
 }
 
 .encounter-canvas {
-	background: rgba(0,0,0,0.3);
 	position: fixed;
 	top: 0;
+}
+
+.background-canvas {
+	background: rgba(0,0,0,0.3);
+}
+
+.character-canvas {
+	z-index: 1;
 }
 
 .encounter-menu-container {
@@ -21,6 +28,7 @@
 	position: fixed;
 	bottom: 0;
 	width: 100%;
+	z-index: 2;
 }
 
 .action-menu {

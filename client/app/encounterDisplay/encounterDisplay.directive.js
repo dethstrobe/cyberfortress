@@ -6,17 +6,19 @@ angular.module('cyberfortressApp')
       templateUrl: 'app/encounterDisplay/encounterDisplay.html',
       restrict: 'EA',
       link: function (scope) {
-      	// var canvas = angular.element('.encounter-canvas')[0];
-       //  canvas.width = $window.innerWidth;
-       //  canvas.height = $window.innerHeight - 76;
 
-       //  var cx = canvas.getContext('2d');
+      	var charCanvas = angular.element('.character-canvas')[0];
+      	charCanvas.width = $window.innerWidth;
+      	charCanvas.height = $window.innerHeight;
+      	var charCX = charCanvas.getContext('2d');
 
-       //  scope.encounterDisplayResize = function () {
-       //  	cx.canvas.width = canvas.width = $window.innerWidth;
-       //  	cx.canvas.height = canvas.height = $window.innerHeight - 76;
-       //  	renderEncounter();
-       //  };
+      	function charRender(cx) {
+      		cx.fillStyle = '#f00';
+      		cx.fillRect(0, 0, 100, 100);
+
+      	}
+
+      	charRender(charCX);
 
 		var encounterMap = [
 			'pppccc',
@@ -26,7 +28,7 @@ angular.module('cyberfortressApp')
 
 		var map = scope.mapGenerator(encounterMap);
 
-       	var display = new CanvasDisplay(angular.element('.encounter-canvas'), encounterMap, map, scope.controls);
+       	var display = new CanvasDisplay(angular.element('.background-canvas'), encounterMap, map, scope.controls);
 
        	var findDisplay = {
        		scale: function (display) {
@@ -35,12 +37,12 @@ angular.module('cyberfortressApp')
 	       		if (canvas.width/2 < canvas.height-200) {
 	        		return display.view.width / 6;
 	        	} else {
-	        		return (canvas.height-200)/3;
+	        		return (canvas.height-200)/3+12;
 	        	}
 	        	
 	       	},
-	       	center: function(dimension) {
-	       		return display.canvas[dimension]/2 - (display.level[dimension] * display.level.scale / 2);
+	       	center: function(dimension, offset) {
+	       		return display.canvas[dimension]/2 - (display.level[dimension] * display.level.scale / 2) + offset;
 	       	}
         };
 
@@ -50,7 +52,7 @@ angular.module('cyberfortressApp')
        		display, 
        		display.level.scale, 
        		{x:0, y:0}, 
-       		{x: findDisplay.center('width'), y: findDisplay.center('height')}
+       		{x: findDisplay.center('width', 0), y: findDisplay.center('height', -18)}
        	);
 
        	display.mapRender(map, display);
@@ -65,7 +67,7 @@ angular.module('cyberfortressApp')
 	       		display, 
 	       		display.level.scale, 
 	       		{x:0, y:0}, 
-	       		{x: findDisplay.center('width'), y: findDisplay.center('height')}
+	       		{x: findDisplay.center('width', 0), y: findDisplay.center('height', -20)}
 	       	);
 
         	display.mapRender(map, display);
@@ -91,7 +93,7 @@ angular.module('cyberfortressApp')
 
         			angular.element('.'+sides).append(characterIcon);
 
-        			//this creates a character's speed attribute
+        			//this sets a character's speed attribute
         			characters[sides][index].speed = setCharacterTime(characters[sides][index]);
         		});
         	}
@@ -170,38 +172,6 @@ angular.module('cyberfortressApp')
         	$interval.cancel(timeoutId);
         }
 
-        // var renderEncounter = function () {
-        // 	var scale, 
-        // 		topOffset = 0, 
-        // 		leftOffset = 0;
-
-        // 	if (canvas.width/2 < canvas.height-100) {
-        // 		scale = canvas.width/6;
-        // 		if (scale*2 < (canvas.height)/2)
-        // 			topOffset = (canvas.height)/2 - (scale*2);
-        // 	} else {
-        // 		scale = (canvas.height-100)/3;
-        // 		leftOffset = canvas.width/2 - (scale*3);
-        // 	}
-
-        // 	//loop creates a 6 x 3 grid for encounters
-        // 	for (var i = 0; i <= 17; i++) {
-        // 		//this is the x and y cordinates
-	       //  	var x = (scale*i)%(scale*6)+leftOffset;
-	       //  	var y = Math.floor(i/6)*scale+topOffset;
-
-	       //  	//set color of tile. red on left, blue on right
-        // 		if (Math.floor(i/3)%2)
-        // 			cx.fillStyle = '#ddf';
-        // 		else
-        // 			cx.fillStyle = '#fdd';
-
-        // 		cx.fillRect( x, y, scale, scale );
-        // 		cx.strokeRect( x, y, scale, scale );
-        // 	};
-        // };
-
-        //renderEncounter();
 
         scope.encounterActions = {};
 

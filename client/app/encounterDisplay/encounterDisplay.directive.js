@@ -8,19 +8,21 @@ angular.module('cyberfortressApp')
       link: function (scope) {
 
       	function charCanvasDisplay() {
-      		var canvas = angular.element('.character-canvas')[0];
+      		this.canvas = angular.element('.character-canvas')[0];
+
+      		var canvas = this.canvas;
 	      	canvas.width = $window.innerWidth;
 	      	canvas.height = $window.innerHeight;
 	      	var cx = canvas.getContext('2d');
 
-	      	this.render = function () {
+	      	this.render = function (time) {
 	      		cx.fillStyle = '#f00';
 	      		cx.fillRect(0, 0, 100, 100);
 	      	}
       	};
 
       	var charDisplay = new charCanvasDisplay();
-      	charDisplay.render();
+      	charDisplay.render(0);
 
 		var encounterMap = [
 			'pppccc',
@@ -61,8 +63,8 @@ angular.module('cyberfortressApp')
 
 
         scope.encounterDisplayResize = function () {
-        	charCX.canvas.width = display.view.width = display.canvas.width = $window.innerWidth;
-         	charCX.canvas.height = display.view.height = display.canvas.height = $window.innerHeight;
+        	charDisplay.canvas.width = display.view.width = display.canvas.width = $window.innerWidth;
+         	charDisplay.canvas.height = display.view.height = display.canvas.height = $window.innerHeight;
 
          	display.level.scale = findDisplay.scale(display);
 
@@ -76,8 +78,6 @@ angular.module('cyberfortressApp')
         	display.mapRender(map, display);
         	charRender(charCX);
         };
-
-        var combatTime = 0;
 
         var characters = encounter.characters();
 
@@ -112,51 +112,66 @@ angular.module('cyberfortressApp')
         setUpEncounter();
 
 
-        var updateEncounter = function () {
-          //if encounter is null, then stop the encounter
-          if (!encounter.current()) {
-        	combatTime = 0;
-            pauseEncounterTimer();
-          }
+        var encounterTimer = {
+        	start: null,
+        	pause: false,
+        	actionPhase: function(progress) {
 
-          var actionPhase = function() {
+				characterLoop(characters, 
+					function (element, index, array) {
+						var sides = this;
 
-          	characterLoop(characters, 
-          		function (element, index, array) {
-          			var sides = this;
+						var characterTime = element.speed * (progress+ element.speedMod);
+						var characterIcon = angular.element('.'+sides+' .'+index);
 
-          			var characterTime = element.speed * (combatTime + element.speedMod);
-          			var characterIcon = angular.element('.'+sides+' .'+index);
+						if (characterTime > 100) {
+							if (sides === 'operatives') {
+								encounterTimer.pause = true;
+								scope.controls.action.attacker = element;
 
-          			if (characterTime > 100) {
-          				if (sides === 'operatives') {
-          					pauseEncounterTimer();
-          					scope.controls.action.attacker = element;
+								//this needs to be replaced later with a way for the player to select defender
+								scope.controls.action.defender = characters.opposition[0];
 
-          					//this needs to be replaced later with a way for the player to select defender
-          					scope.controls.action.defender = characters.opposition[0];
+							} else {
+								//needs to be refactored to select better defender
+								encounter.action(element, characters.operatives[0], 'Melee');
+								element.speed = setCharacterTime(element);
+							}
+							
+							element.speedMod = -progress;
+							characterIcon.css('margin-left', '100%');
 
-          				} else {
-          					//needs to be refactored to select better defender
-          					encounter.action(element, characters.operatives[0], 'Melee');
-        					element.speed = setCharacterTime(element);
-          				}
-          				
-      					element.speedMod = -combatTime;
-          				characterIcon.css('margin-left', '100%');
+						} else {
+							characterIcon.css('margin-left', characterTime+'%');
+						}
 
-          			} else {
-          				characterIcon.css('margin-left', characterTime+'%');
-          			}
+					}
+				);
+				
+			}
+        }
 
-          		}
-          	);
-          	
-          };
+        var updateEncounter = function (time) {
+        	if (!encounterTimer.start) encounterTimer.start = time;
 
-          actionPhase();
+        	var progress = (time - encounterTimer.start)/360;
 
-          combatTime++;
+			
+
+			if (encounter.current() && !encounterTimer.pause) {
+
+				encounterTimer.actionPhase(progress);
+				requestAnimationFrame(updateEncounter);
+
+			} else if (encounterTimer.pause) {
+				encounterTimer.start = progress;
+				requestAnimationFrame(updateEncounter);
+			} else {
+
+				encounterTimer.start = null;
+
+			}
+
         };
 
 
@@ -164,22 +179,17 @@ angular.module('cyberfortressApp')
           function(scope) {return scope.currentEncounter();},
           function (newVar) {
             if(newVar) {
-            	combatTime = 0;
-            	startEncounterTimer();
+            	scope.startEncounter = requestAnimationFrame(updateEncounter); // starts animation
             }
           }
         );
 
         var timeoutId = null;
 
-        var startEncounterTimer = function () {
-          timeoutId = $interval(function() {
-            updateEncounter(); // update DOM
-          }, 100);
-        };
+        
 
         var pauseEncounterTimer = function () {
-        	$interval.cancel(timeoutId);
+        	cancelAnimationFrame(scope.startEncounter);
         }
 
 
@@ -187,7 +197,7 @@ angular.module('cyberfortressApp')
 
         scope.encounterActions.action = function (attacker, defender, actionType) {
         	encounter.action(attacker, defender, actionType);
-        	startEncounterTimer();
+        	encounterTimer.pause = false;
         	attacker.speed = setCharacterTime(attacker);
         }
 

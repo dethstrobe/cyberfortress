@@ -136,7 +136,10 @@ angular.module('cyberfortressApp')
 
 							} else {
 								//needs to be refactored to select better defender
-								encounter.action(element, characters.operatives[0], 'Melee');
+								scope.$apply(
+									encounter.action(element, characters.operatives[0], 'Melee')
+								);
+								
 								element.speed = setCharacterTime(element);
 							}
 							

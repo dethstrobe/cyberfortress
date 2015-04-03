@@ -76,7 +76,7 @@ angular.module('cyberfortressApp')
 	       	);
 
         	display.mapRender(map, display);
-        	charRender(charCX);
+        	charDisplay.render(0);
         };
 
         var characters = encounter.characters();
@@ -84,10 +84,11 @@ angular.module('cyberfortressApp')
 		//finds out how fast the character is
 		var setCharacterTime = function  (character) {
 			//measurement of how fast a character is
-			var min = 1, max = 2;
+			var min = 1, max = 1.5;
 			var random = Math.random()* (max - min) + min;
-			console.log('reflex: '+character.reflex+", intel: "+character.intellegence+', random: '+random);
-			return (character.reflex+character.intellegence)/( random );
+			var total = (character.reflex+character.intellegence)/( random );
+			console.log('reflex: '+character.reflex+", intel: "+character.intellegence+', random: '+random+', total:'+total);
+			return total;
 		}
 
 		function characterLoop(characters, loopFn) {
@@ -162,23 +163,27 @@ angular.module('cyberfortressApp')
         var updateEncounter = function (time) {
         	if (!encounterTimer.start) encounterTimer.start = time;
 
-
         	var progress = (time - encounterTimer.start)/360;
-			
-
+        	
 			if (encounter.current() && !encounterTimer.pause) {
 
 				encounterTimer.actionPhase(progress);
 				requestAnimationFrame(updateEncounter);
 
-			} else if (encounterTimer.pause) {
+			} else if (encounter.current() && encounterTimer.pause) {
 
 				encounterTimer.start += (progress - encounterTimer.offset)*360;
 				requestAnimationFrame(updateEncounter);
 
 			} else {
 
-				encounterTimer.start = null;
+				encounterTimer.start = encounterTimer.offset = null;
+				characterLoop(characters, 
+					function (element, index, array) {
+						element.speedMod = 0;
+						element.speed = setCharacterTime(element);
+					}
+				);
 
 			}
 

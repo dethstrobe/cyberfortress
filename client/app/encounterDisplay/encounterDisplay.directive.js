@@ -7,78 +7,6 @@ angular.module('cyberfortressApp')
       restrict: 'EA',
       link: function (scope) {
 
-      	function charCanvasDisplay() {
-      		this.canvas = angular.element('.character-canvas')[0];
-
-      		var canvas = this.canvas;
-	      	canvas.width = $window.innerWidth;
-	      	canvas.height = $window.innerHeight;
-	      	var cx = canvas.getContext('2d');
-
-	      	this.render = function (time) {
-	      		cx.fillStyle = '#f00';
-	      		cx.fillRect(0, 0, 100, 100);
-	      	}
-      	};
-
-      	var charDisplay = new charCanvasDisplay();
-      	charDisplay.render(0);
-
-		var encounterMap = [
-			'pppccc',
-			'pppccc',
-			'pppccc'
-		]
-
-		var map = scope.mapGenerator(encounterMap);
-
-       	var display = new CanvasDisplay(angular.element('.background-canvas'), encounterMap, map, scope.controls);
-
-       	var findDisplay = {
-       		scale: function (display) {
-	       		var canvas = display.canvas;
-
-	       		if (canvas.width/2 < canvas.height-200) {
-	        		return display.view.width / 6;
-	        	} else {
-	        		return (canvas.height-200)/3+12;
-	        	}
-	        	
-	       	},
-	       	center: function(canvas, level, dimension, offset) {
-	       		return canvas[dimension]/2 - (level[dimension] * level.scale / 2) + offset;
-	       	}
-        };
-
-       	display.level.scale = findDisplay.scale(display);
-
-       	display.zoomOnCenter(
-       		display, 
-       		display.level.scale, 
-       		{x:0, y:0}, 
-       		{x: findDisplay.center(display.canvas, display.level, 'width', 0), y: findDisplay.center(display.canvas, display.level, 'height', -18)}
-       	);
-
-       	display.mapRender(map, display);
-
-
-        scope.encounterDisplayResize = function () {
-        	charDisplay.canvas.width = display.view.width = display.canvas.width = $window.innerWidth;
-         	charDisplay.canvas.height = display.view.height = display.canvas.height = $window.innerHeight;
-
-         	display.level.scale = findDisplay.scale(display);
-
-         	display.zoomOnCenter(
-	       		display, 
-	       		display.level.scale, 
-	       		{x:0, y:0}, 
-	       		{x: findDisplay.center(display.canvas, display.level, 'width', 0), y: findDisplay.center(display.canvas, display.level, 'height', -20)}
-	       	);
-
-        	display.mapRender(map, display);
-        	charDisplay.render(0);
-        };
-
         var characters = encounter.characters();
 
 		//finds out how fast the character is
@@ -87,7 +15,7 @@ angular.module('cyberfortressApp')
 			var min = 1, max = 1.5;
 			var random = Math.random()* (max - min) + min;
 			var total = (character.reflex+character.intellegence)/( random );
-			console.log('reflex: '+character.reflex+", intel: "+character.intellegence+', random: '+random+', total:'+total);
+			
 			return total;
 		}
 
@@ -113,7 +41,92 @@ angular.module('cyberfortressApp')
         	);
         };
 
+       	var findDisplay = {
+       		scale: function (display) {
+	       		var canvas = display.canvas;
+
+	       		if (canvas.width/2 < canvas.height-200) {
+	        		return display.view.width / 6;
+	        	} else {
+	        		return (canvas.height-200)/3+12;
+	        	}
+	        	
+	       	},
+	       	center: function(canvas, level, dimension, offset) {
+	       		return canvas[dimension]/2 - (level[dimension] * level.scale / 2) + offset;
+	       	}
+        };
+
         setUpEncounter();
+
+		var encounterMap = [
+			'pppccc',
+			'pppccc',
+			'pppccc'
+		]
+
+		var map = scope.mapGenerator(encounterMap);
+
+       	var display = new CanvasDisplay(angular.element('.background-canvas'), encounterMap, map, scope.controls);
+
+       	display.level.scale = findDisplay.scale(display);
+
+
+       	display.zoomOnCenter(
+       		display, 
+       		display.level.scale, 
+       		{x:0, y:0}, 
+       		{x: findDisplay.center(display.canvas, display.level, 'width', 0), y: findDisplay.center(display.canvas, display.level, 'height', -18)}
+       	);
+
+       	display.mapRender(map, display);
+
+
+      	var charCanvasDisplay = function () {
+      		this.canvas = angular.element('.character-canvas')[0];
+
+      		var canvas = this.canvas;
+	      	canvas.width = $window.innerWidth;
+	      	canvas.height = $window.innerHeight;
+	      	var cx = canvas.getContext('2d');
+
+	      	this.render = function (time) {
+	      		characterLoop(
+	      			characters,
+	      			function(element, index, array) {
+	      				var sides = this;
+
+	      				var xLoc = display.level.scale * element.location.x;
+	      				var yLoc = display.level.scale * element.location.y;
+
+
+			      		cx.fillStyle = '#f00';
+			      		cx.fillRect(xLoc, yLoc, display.level.scale, display.level.scale);
+	      			}
+	      		);
+	      	}
+      	};
+
+      	var charDisplay = new charCanvasDisplay();
+      	charDisplay.render(0);
+
+
+        scope.encounterDisplayResize = function () {
+        	charDisplay.canvas.width = display.view.width = display.canvas.width = $window.innerWidth;
+         	charDisplay.canvas.height = display.view.height = display.canvas.height = $window.innerHeight;
+
+         	display.level.scale = findDisplay.scale(display);
+
+         	display.zoomOnCenter(
+	       		display, 
+	       		display.level.scale, 
+	       		{x:0, y:0}, 
+	       		{x: findDisplay.center(display.canvas, display.level, 'width', 0), y: findDisplay.center(display.canvas, display.level, 'height', -20)}
+	       	);
+
+        	display.mapRender(map, display);
+        	charDisplay.render(0);
+        };
 
 
         var encounterTimer = {
@@ -164,7 +177,7 @@ angular.module('cyberfortressApp')
         	if (!encounterTimer.start) encounterTimer.start = time;
 
         	var progress = (time - encounterTimer.start)/360;
-        	
+
 			if (encounter.current() && !encounterTimer.pause) {
 
 				encounterTimer.actionPhase(progress);

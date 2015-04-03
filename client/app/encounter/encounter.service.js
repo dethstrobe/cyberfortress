@@ -63,7 +63,6 @@ angular.module('cyberfortressApp')
 
     var actions = {
       Melee: function (attacker, attackRoll, defender, defendRoll) {
-        //console.log(attacker);
         var attackMod = attacker.reflex + attacker.skills.melee + attackRoll;
         var defendMod = defender.reflex + defender.intellegence + defendRoll;
 
@@ -109,7 +108,7 @@ angular.module('cyberfortressApp')
         
         actions[actionType] (attacker, attackRoll, defender, defendRoll);
 
-        console.log(defender.hp);
+        console.log(attacker.name, defender.hp);
       },
 
       actionList : function () {

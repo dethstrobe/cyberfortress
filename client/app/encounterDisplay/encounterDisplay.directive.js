@@ -84,7 +84,10 @@ angular.module('cyberfortressApp')
 		//finds out how fast the character is
 		var setCharacterTime = function  (character) {
 			//measurement of how fast a character is
-			return character.reflex+character.intellegence/( Math.random()* (6 - 3) );
+			var min = 1, max = 2;
+			var random = Math.random()* (max - min) + min;
+			console.log('reflex: '+character.reflex+", intel: "+character.intellegence+', random: '+random);
+			return (character.reflex+character.intellegence)/( random );
 		}
 
 		function characterLoop(characters, loopFn) {

@@ -63,7 +63,7 @@ angular.module('cyberfortressApp')
 
     var actions = {
       Melee: function (attacker, attackRoll, defender, defendRoll) {
-        console.log(attacker);
+        //console.log(attacker);
         var attackMod = attacker.reflex + attacker.skills.melee + attackRoll;
         var defendMod = defender.reflex + defender.intellegence + defendRoll;
 
@@ -105,7 +105,7 @@ angular.module('cyberfortressApp')
       action : function (attacker, defender, actionType) {
         var attackRoll = Math.ceil(Math.random()*10);
         var defendRoll = Math.ceil(Math.random()*10);
-        console.log(actionType);
+        //console.log(actionType);
         
         actions[actionType] (attacker, attackRoll, defender, defendRoll);
 

@@ -115,6 +115,7 @@ angular.module('cyberfortressApp')
         var encounterTimer = {
         	start: null,
         	pause: false,
+        	offset: 0,
         	actionPhase: function(progress) {
 
 				characterLoop(characters, 
@@ -127,6 +128,7 @@ angular.module('cyberfortressApp')
 						if (characterTime > 100) {
 							if (sides === 'operatives') {
 								encounterTimer.pause = true;
+								encounterTimer.offset = progress;
 								scope.controls.action.attacker = element;
 
 								//this needs to be replaced later with a way for the player to select defender
@@ -154,8 +156,8 @@ angular.module('cyberfortressApp')
         var updateEncounter = function (time) {
         	if (!encounterTimer.start) encounterTimer.start = time;
 
-        	var progress = (time - encounterTimer.start)/360;
 
+        	var progress = (time - encounterTimer.start)/360;
 			
 
 			if (encounter.current() && !encounterTimer.pause) {
@@ -164,8 +166,10 @@ angular.module('cyberfortressApp')
 				requestAnimationFrame(updateEncounter);
 
 			} else if (encounterTimer.pause) {
-				encounterTimer.start = progress;
+
+				encounterTimer.start += (progress - encounterTimer.offset)*360;
 				requestAnimationFrame(updateEncounter);
+
 			} else {
 
 				encounterTimer.start = null;

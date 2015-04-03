@@ -90,25 +90,38 @@ angular.module('cyberfortressApp')
 	      	canvas.height = $window.innerHeight;
 	      	var cx = canvas.getContext('2d');
 
+	      	var images = {
+	      		megaman: new Image()
+	      	};
+
+	      	images.megaman.src = '/assets/images/megaman.png'
+
+	      	var findCharLoc = function(element, dimension, axis, offset) {
+	      		return findDisplay.center(display.canvas, display.level, dimension, offset) + element.location[axis] * display.level.scale;
+	      	}
+
 	      	this.render = function (time) {
 	      		characterLoop(
 	      			characters,
 	      			function(element, index, array) {
 	      				var sides = this;
 
-	      				var xLoc = display.level.scale * element.location.x;
-	      				var yLoc = display.level.scale * element.location.y;
+	      				var xLoc = findCharLoc(element, 'width', 'x', 0);
+	      				var yLoc = findCharLoc(element, 'height', 'y', -19);
+	      				var frame = Math.floor(time/100);
 
 
-			      		cx.fillStyle = '#f00';
-			      		cx.fillRect(xLoc, yLoc, display.level.scale, display.level.scale);
+			      		//cx.fillStyle = '#f00';
+			      		//cx.fillRect(xLoc, yLoc, display.level.scale, display.level.scale);
+			      		cx.clearRect(xLoc, yLoc, display.level.scale, display.level.scale);
+			      		cx.imageSmoothingEnabled= false;
+			      		cx.drawImage(images.megaman, frame%4*32, 0, 32, 32, xLoc, yLoc, display.level.scale, display.level.scale);
 	      			}
 	      		);
 	      	}
       	};
 
       	var charDisplay = new charCanvasDisplay();
-      	charDisplay.render(0);
 
 
         scope.encounterDisplayResize = function () {
@@ -125,7 +138,7 @@ angular.module('cyberfortressApp')
 	       	);
 
         	display.mapRender(map, display);
-        	charDisplay.render(0);
+        	//charDisplay.render(0);
         };
 
 
@@ -177,6 +190,8 @@ angular.module('cyberfortressApp')
         	if (!encounterTimer.start) encounterTimer.start = time;
 
         	var progress = (time - encounterTimer.start)/360;
+
+  			charDisplay.render(time);
 
 			if (encounter.current() && !encounterTimer.pause) {
 

@@ -108,7 +108,7 @@ angular.module('cyberfortressApp')
 
 	      				var xLoc = findCharLoc(element, 'width', 'x', 0);
 	      				var yLoc = findCharLoc(element, 'height', 'y', -19);
-	      				var frame = Math.floor(time/100);
+	      				var frame = Math.floor(time/120);
 
 
 			      		//cx.fillStyle = '#f00';
@@ -209,6 +209,7 @@ angular.module('cyberfortressApp')
 				characterLoop(characters, 
 					function (element, index, array) {
 						element.speedMod = 0;
+						encounterTimer.pause = false;
 						element.speed = setCharacterTime(element);
 					}
 				);

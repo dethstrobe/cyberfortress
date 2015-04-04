@@ -90,12 +90,6 @@ angular.module('cyberfortressApp')
 	      	canvas.height = $window.innerHeight;
 	      	var cx = canvas.getContext('2d');
 
-	      	var images = {
-	      		megaman: new Image()
-	      	};
-
-	      	images.megaman.src = '/assets/images/megaman.png'
-
 	      	var findCharLoc = function(element, dimension, axis, offset) {
 	      		return findDisplay.center(display.canvas, display.level, dimension, offset) + element.location[axis] * display.level.scale;
 	      	}
@@ -115,7 +109,7 @@ angular.module('cyberfortressApp')
 			      		//cx.fillRect(xLoc, yLoc, display.level.scale, display.level.scale);
 			      		cx.clearRect(xLoc, yLoc, display.level.scale, display.level.scale);
 			      		cx.imageSmoothingEnabled= false;
-			      		cx.drawImage(images.megaman, frame%4*32, 0, 32, 32, xLoc, yLoc, display.level.scale, display.level.scale);
+			      		cx.drawImage(element.icon, frame%4*32, 0, 32, 32, xLoc, yLoc, display.level.scale, display.level.scale);
 	      			}
 	      		);
 	      	}

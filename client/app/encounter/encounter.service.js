@@ -30,18 +30,8 @@ angular.module('cyberfortressApp')
         current: intel + per
       };
 
-      function setSkills(skills) {
-        var skillList = {};
-
-        for (var skill in skills) {
-          skillList.skill = skills.skill;
-        };
-
-        return skillList;
-      };
-
       //skills
-      this.skills = setSkills(skills);
+      this.skills = skills;
 
       this.speed = this.speedMod = 0;
 
@@ -50,26 +40,26 @@ angular.module('cyberfortressApp')
         y: loc.y
       };
 
-      this.icon = new Image();
-      this.icon.src = '/assets/images/'+name.replace(/\s+/g, '').toLowerCase()+'.png';
+      this.sprite = new Image();
+      this.sprite.src = '/assets/images/'+name.replace(/\s+/g, '').toLowerCase()+'.png';
     };
 
     var characters = {
       operatives : [
 
-        new CharacterCreation('Street Sam', 5, 6, 3, 1, {melee:5, range: 4}, {x:3, y:1})
+        new CharacterCreation('Street Sam', 5, 6, 3, 1, {melee: 5, range: 4}, {x:3, y:1})
 
       ],
       opposition : [
-        new CharacterCreation('Guard', 4, 4, 4, 3, {melee:5, range: 4}, {x:2, y:1})
+        new CharacterCreation('Guard', 4, 4, 4, 3, {melee: 5, range: 4}, {x:2, y:1})
       ]
     };
 
     var actions = {
       Melee: function (attacker, attackRoll, defender, defendRoll) {
-        console.log(attacker, defender);
         var attackMod = attacker.reflex + attacker.skills.melee + attackRoll;
         var defendMod = defender.reflex + defender.intellegence + defendRoll;
+        console.log(attackMod, defendMod);
 
         if (attackMod > defendMod) {
           var bonusDamage = attackMod - defendMod,

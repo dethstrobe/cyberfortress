@@ -109,7 +109,7 @@ angular.module('cyberfortressApp')
 			      		//cx.fillRect(xLoc, yLoc, display.level.scale, display.level.scale);
 			      		cx.clearRect(xLoc, yLoc, display.level.scale, display.level.scale);
 			      		cx.imageSmoothingEnabled= false;
-			      		cx.drawImage(element.icon, frame%4*32, 0, 32, 32, xLoc, yLoc, display.level.scale, display.level.scale);
+			      		cx.drawImage(element.sprite, frame%4*32, 0, 32, 32, xLoc, yLoc, display.level.scale, display.level.scale);
 	      			}
 	      		);
 	      	}

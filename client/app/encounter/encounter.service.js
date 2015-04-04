@@ -10,59 +10,64 @@ angular.module('cyberfortressApp')
       {type: null, freq: 99}
     ];
 
+
+    var CharacterCreation = function(name, str, ref, intel, per, skills, loc) {
+      this.name = name;
+      //player attirbutes
+      this.strength = str;
+      this.reflex = ref;
+      this.intellegence = intel;
+      this.personality = per;
+
+      //derived stats
+      this.hp = {
+        max: str + ref,
+        current: str + ref
+      };
+
+      this.sp = {
+        max: intel + per,
+        current: intel + per
+      };
+
+      function setSkills(skills) {
+        var skillList = {};
+
+        for (var skill in skills) {
+          skillList.skill = skills.skill;
+        };
+
+        return skillList;
+      };
+
+      //skills
+      this.skills = setSkills(skills);
+
+      this.speed = this.speedMod = 0;
+
+      this.location = {
+        x: loc.x,
+        y: loc.y
+      };
+
+      this.icon = new Image();
+      this.icon.src = '/assets/images/'+name.replace(/\s+/g, '').toLowerCase()+'.png';
+    };
+
     var characters = {
       operatives : [
-        {
-          name: 'Street Sam',
-          hp: 11,
-          sp: 4,
-          strength: 5,
-          reflex: 6,
-          intellegence: 3,
-          personality: 1,
-          skills: {
-            melee: 5,
-            range: 4,
-            hacking: 0,
-            psi: 0,
-            talk: 0
-          },
-          speed: 0,
-          speedMod: 0,
-          location: {
-            x: 3,
-            y: 1
-          }
-        }
+
+        new CharacterCreation('Street Sam', 5, 6, 3, 1, {melee:5, range: 4}, {x:3, y:1})
+
       ],
       opposition : [
-        {
-          name: 'Guard',
-          hp: 8,
-          sp: 7,
-          strength: 4,
-          reflex: 4,
-          intellegence: 4,
-          personality: 3,
-          skills: {
-            melee: 5,
-            range: 4,
-            hacking: 0,
-            psi: 0,
-            talk: 0
-          },
-          speed: 0,
-          speedMod: 0,
-          location: {
-            x: 2,
-            y: 1
-          }
-        }
+        new CharacterCreation('Guard', 4, 4, 4, 3, {melee:5, range: 4}, {x:2, y:1})
       ]
     };
 
     var actions = {
       Melee: function (attacker, attackRoll, defender, defendRoll) {
+        console.log(attacker, defender);
         var attackMod = attacker.reflex + attacker.skills.melee + attackRoll;
         var defendMod = defender.reflex + defender.intellegence + defendRoll;
 
@@ -70,7 +75,7 @@ angular.module('cyberfortressApp')
           var bonusDamage = attackMod - defendMod,
               damage = attacker.strength + bonusDamage - defender.strength;
           if (damage > 0)
-            return defender.hp -= damage;
+            return defender.hp.current -= damage;
 
         } else {
           console.log("Attack Missed");

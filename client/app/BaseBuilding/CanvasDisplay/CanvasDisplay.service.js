@@ -48,7 +48,7 @@ angular.module('cyberfortressApp')
 		    	var tileType = map[tileLoc.y][tileLoc.x].type;
 
           		if (encounter.current()) {
-            		return currentTile;
+            		return tileLoc;
 
           		} else if (!controls.operation || currentTile === null && tileType === 'Exit') {
 		    		return tileLoc;
@@ -73,9 +73,7 @@ angular.module('cyberfortressApp')
 	    		return currentTile;
 		    };
 
-  			var canvas = event.currentTarget;
-
-  			var pos = display.relativePos(event, canvas);
+  			var pos = display.relativePos(event, display.canvas);
 
   			var tileLoc = {
   				x: Math.floor((pos.x - display.view.x) / display.level.scale),
@@ -88,16 +86,16 @@ angular.module('cyberfortressApp')
   			} else if (typeof map[tileLoc.y] !== 'undefined' && typeof map[tileLoc.y][tileLoc.x] !== 'undefined') {
   				display.view.select = mapCheck(tileLoc, display.view.select);
 
-        } else if (controls.operation) {
-          return;
+	        } else if (controls.operation) {
+	          return;
 
-        } else {
-  				display.view.select = null;
-        }
+	        } else {
+	  				display.view.select = null;
+	        }
 
 
   			display.mapRender(map, display);
-        event.preventDefault();
+        	event.preventDefault();
 	    };
 
 	    this.mapZoom = function(event) {

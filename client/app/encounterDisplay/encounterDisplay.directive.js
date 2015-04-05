@@ -90,6 +90,8 @@ angular.module('cyberfortressApp')
 	      	canvas.height = $window.innerHeight;
 	      	var cx = canvas.getContext('2d');
 
+	      	//canvas.on('click', function(event) {console.log(event)})
+
 	      	var findCharLoc = function(element, dimension, axis, offset) {
 	      		return findDisplay.center(display.canvas, display.level, dimension, offset) + element.location[axis] * display.level.scale;
 	      	}
@@ -104,9 +106,6 @@ angular.module('cyberfortressApp')
 	      				var yLoc = findCharLoc(element, 'height', 'y', -19);
 	      				var frame = Math.floor(time/120);
 
-
-			      		//cx.fillStyle = '#f00';
-			      		//cx.fillRect(xLoc, yLoc, display.level.scale, display.level.scale);
 			      		cx.clearRect(xLoc, yLoc, display.level.scale, display.level.scale);
 			      		cx.imageSmoothingEnabled= false;
 			      		cx.drawImage(element.sprite, frame%4*32, 0, 32, 32, xLoc, yLoc, display.level.scale, display.level.scale);
@@ -116,6 +115,11 @@ angular.module('cyberfortressApp')
       	};
 
       	var charDisplay = new charCanvasDisplay();
+
+      	charDisplay.canvas.addEventListener('click', function(event) {
+      		display.mapSelect(event);
+      	});
+      	
 
 
         scope.encounterDisplayResize = function () {
@@ -233,7 +237,7 @@ angular.module('cyberfortressApp')
 
         scope.encounterActions = {};
 
-        scope.encounterActions.action = function (attacker, defender, actionType) {
+        scope.encounterActions.action = function (attacker, defender, actionType, characters) {
         	encounter.action(attacker, defender, actionType);
         	encounterTimer.pause = false;
         	attacker.speed = setCharacterTime(attacker);

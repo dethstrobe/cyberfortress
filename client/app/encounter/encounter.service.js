@@ -65,7 +65,9 @@ angular.module('cyberfortressApp')
           var bonusDamage = attackMod - defendMod,
               damage = attacker.strength + bonusDamage - defender.strength;
           if (damage > 0)
-            return defender.hp.current -= damage;
+            defender.hp.current -= damage;
+          console.log(defender.hp.current);
+          return;
 
         } else {
           console.log("Attack Missed");
@@ -108,6 +110,14 @@ angular.module('cyberfortressApp')
 
       actionList : function () {
         return Object.keys(actions);
+      },
+
+      isDead : function (charObject, keyFaction, index) {
+        var factionArray = charObject[keyFaction];
+        if (factionArray[index].hp.current <= 0) {
+          factionArray.splice(index, 1);
+          angular.element('.unit .'+index).remove();
+        }
       }
 
     };

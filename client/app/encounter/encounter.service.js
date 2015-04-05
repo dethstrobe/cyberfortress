@@ -117,7 +117,8 @@ angular.module('cyberfortressApp')
         var factionArray = charObject[keyFaction];
         if (factionArray[index].hp.current <= 0) {
           factionArray.splice(index, 1);
-          angular.element('.unit .'+index).remove();
+          angular.element('.'+keyFaction+' .unit.'+index).remove();
+          console.log(angular.element('.'+keyFaction+' .unit.'+index));
         }
       }
 

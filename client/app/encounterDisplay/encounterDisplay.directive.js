@@ -125,6 +125,9 @@ angular.module('cyberfortressApp')
 
       				if (_.isEqual(element.location, display.view.select)) {
       					scope.controls.action.defender = characters[sides][index];
+      					scope.controls.action.defender.sides = sides;
+      					scope.controls.action.defender.index = index;
+
       				}
       			}
       		)
@@ -249,9 +252,11 @@ angular.module('cyberfortressApp')
         scope.encounterActions = {};
 
         scope.encounterActions.action = function (attacker, defender, actionType, characters) {
+        	if (!defender) return;
         	encounter.action(attacker, defender, actionType);
         	encounterTimer.pause = false;
         	attacker.speed = setCharacterTime(attacker);
+        	encounter.isDead(characters, defender.sides, defender.index);
         }
 
 

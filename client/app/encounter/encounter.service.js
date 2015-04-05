@@ -77,6 +77,7 @@ angular.module('cyberfortressApp')
 
     // Public API here
     return {
+      //figures out if there is an encounter
       random : function () {
         var randomEncounter = Math.floor(Math.random() * 100);
         for (var i = 0, len = encounterList.length; i< len ; i++) {

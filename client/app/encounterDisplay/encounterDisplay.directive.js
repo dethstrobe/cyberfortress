@@ -118,6 +118,16 @@ angular.module('cyberfortressApp')
 
       	charDisplay.canvas.addEventListener('click', function(event) {
       		display.mapSelect(event);
+      		characterLoop(
+      			characters,
+      			function (element, index, array) {
+      				var sides = this;
+
+      				if (_.isEqual(element.location, display.view.select)) {
+      					scope.controls.action.defender = characters[sides][index];
+      				}
+      			}
+      		)
       	});
       	
 
@@ -144,6 +154,7 @@ angular.module('cyberfortressApp')
         	start: null,
         	pause: false,
         	offset: 0,
+        	//do action when character time is full
         	actionPhase: function(progress) {
 
 				characterLoop(characters, 
@@ -160,7 +171,7 @@ angular.module('cyberfortressApp')
 								scope.controls.action.attacker = element;
 
 								//this needs to be replaced later with a way for the player to select defender
-								scope.controls.action.defender = characters.opposition[0];
+								//scope.controls.action.defender = characters.opposition[0];
 
 							} else {
 								//needs to be refactored to select better defender

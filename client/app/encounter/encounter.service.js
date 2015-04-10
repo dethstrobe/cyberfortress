@@ -47,16 +47,18 @@ angular.module('cyberfortressApp')
     var characters = {
       operatives : [
 
-        new CharacterCreation('Street Sam', 5, 6, 3, 1, {melee: 5, range: 4}, {x:3, y:1})
+        new CharacterCreation('Street Sam', 5, 6, 3, 1, {melee: 5, range: 4}, {x:3, y:1}),
+        new CharacterCreation('Street Sam', 6, 5, 2, 2, {melee: 3, range: 6}, {x:5, y:0})
 
       ],
       opposition : [
-        new CharacterCreation('Guard', 4, 4, 4, 3, {melee: 5, range: 4}, {x:2, y:1})
+        new CharacterCreation('Guard', 4, 4, 4, 3, {melee: 5, range: 4}, {x:2, y:1}),
+        new CharacterCreation('Guard', 4, 4, 4, 3, {melee: 4, range: 5}, {x:0, y:2})
       ]
     };
 
     var applyPhysicalDamage = function(attacker, defender, skill, attackBoni, defendBoni) {
-      
+
       var attackRoll = Math.ceil(Math.random()*10);
       var defendRoll = Math.ceil(Math.random()*10);
 
@@ -107,7 +109,9 @@ angular.module('cyberfortressApp')
 
         var rangeFromTarget = Math.abs(attacker.location.x - defender.location.x);
 
-        var rangeMod = (rangeModifers[rangeFromTarget] || rangeModifers.default);
+        var rangeMod = rangeModifers[rangeFromTarget] || rangeModifers.default;
+
+        console.log(rangeMod);
 
 
         defender.hp.current -= applyPhysicalDamage(attacker, defender, 'range', rangeMod, 0);

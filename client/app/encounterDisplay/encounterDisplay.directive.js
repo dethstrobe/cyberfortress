@@ -158,6 +158,28 @@ angular.module('cyberfortressApp')
         	//charDisplay.render(0);
         };
 
+        var oppositionBehavior = function (guard) {
+
+        	var len = characters.operatives.length;
+
+        	//find enemy in range of melee attack
+        	for (var i = 0; i < len; ++i) {
+        		var element = characters.operatives[i];
+
+        		if (element.location.x === guard.location.x + 1 && element.location.y === guard.location.y) {
+        			encounter.action(guard, element, 'Melee');
+        			return 'melee';
+        		}
+        	}
+
+        	//attack enemy with range attack
+        	var randomTarget = characters.operatives[Math.floor(Math.random() * len)];
+
+
+        	encounter.action(guard, randomTarget, 'Range');
+        	return 'range';
+        }
+
 
         var encounterTimer = {
         	start: null,
@@ -179,13 +201,10 @@ angular.module('cyberfortressApp')
 								encounterTimer.offset = progress;
 								scope.controls.action.attacker = element;
 
-								//this needs to be replaced later with a way for the player to select defender
-								//scope.controls.action.defender = characters.opposition[0];
-
 							} else {
 								//needs to be refactored to select better defender
 								scope.$apply(
-									encounter.action(element, characters.operatives[0], 'Melee')
+									console.log(oppositionBehavior(element))
 								);
 								
 								element.speed = setCharacterTime(element);
@@ -271,8 +290,10 @@ angular.module('cyberfortressApp')
 
 	        	if (isDefenderDead) {
 	        		charDisplay.clearScreen();
-	        		stopEncounterTimer();
-	        		encounter.current(null);
+	        		if (characters.opposition.length <= 0) {
+		        		stopEncounterTimer();
+		        		encounter.current(null);
+	        		}
 	        	}
         	}
         }

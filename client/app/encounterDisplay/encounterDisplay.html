@@ -23,9 +23,9 @@
 
       <div class="col-xs-5 encounter-menu-container">
         <table class="table encounter-menu">
-          <tr>
-            <td>{{characters.operatives[0].name}}</td>
-            <td>{{characters.operatives[0].hp.current}}/{{characters.operatives[0].hp.max}}</td>
+          <tr ng-repeat="operative in characters.operatives">
+            <td>{{operative.name}}</td>
+            <td>{{operative.hp.current}}/{{operative.hp.max}}</td>
           </tr>
           <tr>
             <td>Phychic</td>

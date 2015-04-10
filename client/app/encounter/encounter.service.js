@@ -58,7 +58,11 @@ angular.module('cyberfortressApp')
     var actions = {
       Melee: function (attacker, attackRoll, defender, defendRoll) {
         //check to see if target is in range
-        if (attacker.location.x !== defender.location.x + 1 && attacker.location.x !== defender.location.x - 1) {
+        if (
+          attacker.location.x !== defender.location.x + 1
+          && attacker.location.x !== defender.location.x - 1
+          && attacker.location.y !== defender.location.y
+        ) {
           console.log('Defender too far');
           return null;
         }

@@ -55,8 +55,32 @@ angular.module('cyberfortressApp')
       ]
     };
 
+    var applyPhysicalDamage = function(attacker, defender, skill, attackBoni, defendBoni) {
+      
+      var attackRoll = Math.ceil(Math.random()*10);
+      var defendRoll = Math.ceil(Math.random()*10);
+
+      var attackMod = attacker.reflex + attacker.skills[skill] + attackBoni + attackRoll;
+      var defendMod = defender.reflex + defender.intellegence + defendBoni + defendRoll;
+
+      if (attackMod > defendMod) {
+        var bonusDamage = attackMod - defendMod,
+            damage = attacker.strength + bonusDamage - defender.strength;
+
+        if (damage > 0)
+          return damage;
+
+        console.log(defender.hp.current);
+
+      } else {
+        console.log("Attack Missed");
+      }
+
+      return 0;
+    }
+
     var actions = {
-      Melee: function (attacker, attackRoll, defender, defendRoll) {
+      Melee: function (attacker, defender) {
         //check to see if target is in range
         if (
           attacker.location.x !== defender.location.x + 1
@@ -67,22 +91,29 @@ angular.module('cyberfortressApp')
           return null;
         }
 
-        var attackMod = attacker.reflex + attacker.skills.melee + attackRoll;
-        var defendMod = defender.reflex + defender.intellegence + defendRoll;
-        console.log(attackMod, defendMod);
-
-        if (attackMod > defendMod) {
-          var bonusDamage = attackMod - defendMod,
-              damage = attacker.strength + bonusDamage - defender.strength;
-          if (damage > 0)
-            defender.hp.current -= damage;
-
-          console.log(defender.hp.current);
-
-        } else {
-          console.log("Attack Missed");
-        }
+        defender.hp.current -= applyPhysicalDamage(attacker, defender, 'melee', 0, 0);
+        console.log(defender.hp.current);
+        
         return true;
+      },
+      Range: function (attacker, defender) {
+        var rangeModifers = {
+          1: -3,
+          4: -1,
+          5: -2,
+          6: -3,
+          default: 0
+        }
+
+        var rangeFromTarget = Math.abs(attacker.location.x - defender.location.x);
+
+        var rangeMod = (rangeModifers[rangeFromTarget] || rangeModifers.default);
+
+
+        defender.hp.current -= applyPhysicalDamage(attacker, defender, 'range', rangeMod, 0);
+        console.log(defender.hp.current);
+        return true;
+
       }
     }
 
@@ -111,10 +142,8 @@ angular.module('cyberfortressApp')
       },
 
       action : function (attacker, defender, actionType) {
-        var attackRoll = Math.ceil(Math.random()*10);
-        var defendRoll = Math.ceil(Math.random()*10);
         
-        var action = actions[actionType] (attacker, attackRoll, defender, defendRoll);
+        var action = actions[actionType] (attacker, defender);
 
         return action;
       },

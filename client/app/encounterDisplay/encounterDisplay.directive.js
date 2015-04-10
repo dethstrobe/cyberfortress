@@ -261,8 +261,6 @@ angular.module('cyberfortressApp')
 
         	var successfulAction = encounter.action(attacker, defender, actionType);
 
-        	console.log(successfulAction);
-
         	if (successfulAction) {
 	        	encounterTimer.pause = false;
 	        	attacker.speed = setCharacterTime(attacker);

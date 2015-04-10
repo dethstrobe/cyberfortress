@@ -61,7 +61,7 @@ angular.module('cyberfortressApp')
         if (
           attacker.location.x !== defender.location.x + 1
           && attacker.location.x !== defender.location.x - 1
-          && attacker.location.y !== defender.location.y
+          || attacker.location.y !== defender.location.y
         ) {
           console.log('Defender too far');
           return null;

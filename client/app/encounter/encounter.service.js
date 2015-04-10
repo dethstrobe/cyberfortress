@@ -57,6 +57,12 @@ angular.module('cyberfortressApp')
 
     var actions = {
       Melee: function (attacker, attackRoll, defender, defendRoll) {
+        //check to see if target is in range
+        if (attacker.location.x !== defender.location.x + 1 && attacker.location.x !== defender.location.x - 1) {
+          console.log('Defender too far');
+          return null;
+        }
+
         var attackMod = attacker.reflex + attacker.skills.melee + attackRoll;
         var defendMod = defender.reflex + defender.intellegence + defendRoll;
         console.log(attackMod, defendMod);
@@ -66,12 +72,13 @@ angular.module('cyberfortressApp')
               damage = attacker.strength + bonusDamage - defender.strength;
           if (damage > 0)
             defender.hp.current -= damage;
+
           console.log(defender.hp.current);
-          return;
 
         } else {
           console.log("Attack Missed");
         }
+        return true;
       }
     }
 
@@ -102,11 +109,10 @@ angular.module('cyberfortressApp')
       action : function (attacker, defender, actionType) {
         var attackRoll = Math.ceil(Math.random()*10);
         var defendRoll = Math.ceil(Math.random()*10);
-        //console.log(actionType);
         
-        actions[actionType] (attacker, attackRoll, defender, defendRoll);
+        var action = actions[actionType] (attacker, attackRoll, defender, defendRoll);
 
-        console.log(attacker.name, defender.hp);
+        return action;
       },
 
       actionList : function () {
@@ -119,6 +125,9 @@ angular.module('cyberfortressApp')
           factionArray.splice(index, 1);
           angular.element('.'+keyFaction+' .unit.'+index).remove();
           console.log(angular.element('.'+keyFaction+' .unit.'+index));
+          return true;
+        } else {
+          return false;
         }
       }
 

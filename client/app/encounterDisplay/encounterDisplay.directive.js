@@ -94,7 +94,7 @@ angular.module('cyberfortressApp')
 
 	      	var findCharLoc = function(element, dimension, axis, offset) {
 	      		return findDisplay.center(display.canvas, display.level, dimension, offset) + element.location[axis] * display.level.scale;
-	      	}
+	      	};
 
 	      	this.render = function (time) {
 	      		characterLoop(
@@ -111,6 +111,10 @@ angular.module('cyberfortressApp')
 			      		cx.drawImage(element.sprite, frame%4*32, 0, 32, 32, xLoc, yLoc, display.level.scale, display.level.scale);
 	      			}
 	      		);
+	      	};
+
+	      	this.clearScreen = function () {
+	      		cx.clearRect(0, 0, canvas.width, canvas.height);
 	      	}
       	};
 
@@ -118,6 +122,8 @@ angular.module('cyberfortressApp')
 
       	charDisplay.canvas.addEventListener('click', function(event) {
       		display.mapSelect(event);
+
+      		//if character's location is the same as the selected location, set that as defender
       		characterLoop(
       			characters,
       			function (element, index, array) {
@@ -239,12 +245,9 @@ angular.module('cyberfortressApp')
             }
           }
         );
-
-        var timeoutId = null;
-
         
 
-        var pauseEncounterTimer = function () {
+        var stopEncounterTimer = function () {
         	cancelAnimationFrame(scope.startEncounter);
         }
 
@@ -252,11 +255,28 @@ angular.module('cyberfortressApp')
         scope.encounterActions = {};
 
         scope.encounterActions.action = function (attacker, defender, actionType, characters) {
-        	if (!defender) return;
-        	encounter.action(attacker, defender, actionType);
-        	encounterTimer.pause = false;
-        	attacker.speed = setCharacterTime(attacker);
-        	encounter.isDead(characters, defender.sides, defender.index);
+        	if (!defender) 
+        		return null;
+
+
+        	var successfulAction = encounter.action(attacker, defender, actionType);
+
+        	console.log(successfulAction);
+
+        	if (successfulAction) {
+	        	encounterTimer.pause = false;
+	        	attacker.speed = setCharacterTime(attacker);
+
+	        	var isDefenderDead = encounter.isDead(characters, defender.sides, defender.index);
+
+	        	console.log(isDefenderDead);
+
+	        	if (isDefenderDead) {
+	        		charDisplay.clearScreen();
+	        		stopEncounterTimer();
+	        		encounter.current(null);
+	        	}
+        	}
         }
 
 

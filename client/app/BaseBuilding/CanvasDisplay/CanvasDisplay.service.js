@@ -33,12 +33,12 @@ angular.module('cyberfortressApp')
 
   			if (display.view.move === true){
 	          display.view.move = false;
-	          return;
+	          return null;
 	        }
 
 	    	var mapAction = function(location) {
 		    	if (!controls.build) {
-		    		return;
+		    		return null;
 	            }
 
 		    	map[location.y][location.x].type = controls.build;
@@ -87,7 +87,7 @@ angular.module('cyberfortressApp')
   				display.view.select = mapCheck(tileLoc, display.view.select);
 
 	        } else if (controls.operation) {
-	          return;
+	          return null;
 
 	        } else {
 	  				display.view.select = null;
@@ -206,12 +206,10 @@ angular.module('cyberfortressApp')
 	     if (event.which == 1) {
 
 	      //do onMove function on mousemove
-	      var trackDrag = function(onMove, onEnd) {
+	      var trackDrag = function(onMove) {
 	        function end(event) {
 	          removeEventListener("mousemove", onMove);
 	          removeEventListener("mouseup", end);
-	          if (onEnd)
-	            onEnd(event);
 	        }
 	        addEventListener("mousemove", onMove);
 	        addEventListener("mouseup", end);

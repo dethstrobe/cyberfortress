@@ -202,6 +202,7 @@ angular.module('cyberfortressApp')
 								scope.controls.action.attacker = element;
 
 							} else {
+								console.log(element);
 								//needs to be refactored to select better defender
 								scope.$apply(
 									console.log(oppositionBehavior(element))

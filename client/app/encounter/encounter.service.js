@@ -6,7 +6,7 @@ angular.module('cyberfortressApp')
 
     var encounterList = [
       {type: 'Fight', freq: 20},
-      {type: 'Social', freq: 50},
+      {type: 'Fight', freq: 50},
       {type: null, freq: 99}
     ];
 
@@ -48,14 +48,49 @@ angular.module('cyberfortressApp')
       operatives : [
 
         new CharacterCreation('Street Sam', 5, 6, 3, 1, {melee: 5, range: 4}, {x:3, y:1}),
-        new CharacterCreation('Street Sam', 6, 5, 2, 2, {melee: 3, range: 6}, {x:5, y:0})
+        new CharacterCreation('Street Sam', 5, 5, 3, 2, {melee: 3, range: 6}, {x:5, y:0})
 
       ],
       opposition : [
-        new CharacterCreation('Guard', 4, 4, 4, 3, {melee: 5, range: 4}, {x:2, y:1}),
-        new CharacterCreation('Guard', 4, 4, 4, 3, {melee: 4, range: 5}, {x:0, y:2})
+        new CharacterCreation('Guard', 5, 4, 3, 3, {melee: 5, range: 4}, {x:2, y:1}),
+        new CharacterCreation('Guard', 4, 4, 4, 3, {melee: 4, range: 5}, {x:0, y:2}),
+        new CharacterCreation('Guard', 4, 5, 3, 3, {melee: 4, range: 5}, {x:1, y:0})
       ]
     };
+
+    var setUpFight = function () {
+      var opponents = characters.opposition;
+
+      var randomTiles = function () {
+        function randomTile() {
+          return Math.floor(Math.random() * 3)
+        };
+
+        var location = {
+          x: randomTile(),
+          y: randomTile()
+        };
+
+        for (var i = 0, oppoentsLength = opponents.length; i < oppoentsLength; ++i) {
+
+          if (_.isEqual(opponents[i].location, location)) {
+            location = randomTiles();
+            break;
+          }
+        }
+
+        return location;
+      };
+
+
+      for (var i = opponents.length; i < 5; ++i) {
+        var location = randomTiles();
+
+        opponents[i] = new CharacterCreation('Guard', 4, 4, 4, 3, {melee: 4, range: 5}, location);
+      }
+
+      console.log(opponents);
+    }
 
     var applyPhysicalDamage = function(attacker, defender, skill, attackBoni, defendBoni) {
 
@@ -71,8 +106,6 @@ angular.module('cyberfortressApp')
 
         if (damage > 0)
           return damage;
-
-        console.log(defender.hp.current);
 
       } else {
         console.log("Attack Missed");
@@ -129,6 +162,10 @@ angular.module('cyberfortressApp')
         for (var i = 0, len = encounterList.length; i< len ; i++) {
           if (randomEncounter < encounterList[i].freq){
             currentEncounter = encounterList[i].type;
+            if (currentEncounter === 'Fight') {
+              console.log('set up the fight!')
+              setUpFight();
+            }
             break;
           }
         }
@@ -158,13 +195,18 @@ angular.module('cyberfortressApp')
 
       isDead : function (charObject, keyFaction, index) {
         var factionArray = charObject[keyFaction];
+
         if (factionArray[index].hp.current <= 0) {
+
           factionArray.splice(index, 1);
-          angular.element('.'+keyFaction+' .unit.'+index).remove();
+          angular.element('.'+keyFaction+' .unit.'+factionArray.length).remove();
           console.log(angular.element('.'+keyFaction+' .unit.'+index));
           return true;
+
         } else {
+
           return false;
+
         }
       }
 

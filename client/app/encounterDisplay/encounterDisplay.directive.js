@@ -30,13 +30,17 @@ angular.module('cyberfortressApp')
         	characterLoop(characters, 
         		function(element, index, array) {
         			var sides = this;
-        			var characterIcon = angular.element('<div/>')
-        				.addClass( "unit "+index );
 
-        			angular.element('.'+sides).append(characterIcon);
+        			if (!angular.element('.'+sides+' .'+index).length) {
+        				var characterIcon = angular.element('<div/>')
+	        				.addClass( "unit "+index );
 
-        			//this sets a character's speed attribute
-        			characters[sides][index].speed = setCharacterTime(characters[sides][index]);
+	        			angular.element('.'+sides).append(characterIcon);
+
+	        			//this sets a character's speed attribute
+	        			characters[sides][index].speed = setCharacterTime(characters[sides][index]);
+        			}
+        			
         		}
         	);
         };
@@ -261,6 +265,7 @@ angular.module('cyberfortressApp')
           function(scope) {return scope.currentEncounter();},
           function (newVar) {
             if(newVar) {
+            	setUpEncounter();
             	scope.startEncounter = requestAnimationFrame(updateEncounter); // starts animation
             }
           }
@@ -291,6 +296,9 @@ angular.module('cyberfortressApp')
 
 	        	if (isDefenderDead) {
 	        		charDisplay.clearScreen();
+	        		display.view.select = scope.controls.action.defender = null;
+	        		display.mapRender(map, display);
+
 	        		if (characters.opposition.length <= 0) {
 		        		stopEncounterTimer();
 		        		encounter.current(null);

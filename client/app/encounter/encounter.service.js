@@ -11,7 +11,7 @@ angular.module('cyberfortressApp')
     ];
 
 
-    var CharacterCreation = function(name, str, ref, intel, per, skills, loc) {
+    var CharacterCreation = function(name, str, ref, intel, per, skills, side, loc) {
       this.name = name;
       //player attirbutes
       this.strength = str;
@@ -35,6 +35,8 @@ angular.module('cyberfortressApp')
 
       this.speed = this.speedMod = 0;
 
+      this.sides = side;
+
       this.location = {
         x: loc.x,
         y: loc.y
@@ -47,14 +49,14 @@ angular.module('cyberfortressApp')
     var characters = {
       operatives : [
 
-        new CharacterCreation('Street Sam', 5, 6, 3, 1, {melee: 5, range: 4}, {x:3, y:1}),
-        new CharacterCreation('Street Sam', 5, 5, 3, 2, {melee: 3, range: 6}, {x:5, y:0})
+        new CharacterCreation('Street Sam', 5, 6, 3, 1, {melee: 5, range: 4}, 'operatives', {x:3, y:1}),
+        new CharacterCreation('Street Sam', 5, 5, 3, 2, {melee: 3, range: 6}, 'operatives', {x:5, y:0})
 
       ],
       opposition : [
-        new CharacterCreation('Guard', 5, 4, 3, 3, {melee: 5, range: 4}, {x:2, y:1}),
-        new CharacterCreation('Guard', 4, 4, 4, 3, {melee: 4, range: 5}, {x:0, y:2}),
-        new CharacterCreation('Guard', 4, 5, 3, 3, {melee: 4, range: 5}, {x:1, y:0})
+        new CharacterCreation('Guard', 5, 4, 3, 3, {melee: 5, range: 4}, 'opposition', {x:2, y:1}),
+        new CharacterCreation('Guard', 4, 4, 4, 3, {melee: 4, range: 5}, 'opposition', {x:0, y:2}),
+        new CharacterCreation('Guard', 4, 5, 3, 3, {melee: 4, range: 5}, 'opposition', {x:1, y:0})
       ]
     };
 
@@ -86,7 +88,7 @@ angular.module('cyberfortressApp')
       for (var i = opponents.length; i < 5; ++i) {
         var location = randomTiles();
 
-        opponents[i] = new CharacterCreation('Guard', 4, 4, 4, 3, {melee: 4, range: 5}, location);
+        opponents[i] = new CharacterCreation('Guard', 4, 4, 4, 3, {melee: 4, range: 5}, 'opposition', location);
       }
 
       console.log(opponents);
@@ -134,9 +136,9 @@ angular.module('cyberfortressApp')
       Range: function (attacker, defender) {
         var rangeModifers = {
           1: -3,
-          4: -1,
-          5: -2,
-          6: -3,
+          3: -1,
+          4: -2,
+          5: -4,
           default: 0
         }
 
@@ -144,7 +146,7 @@ angular.module('cyberfortressApp')
 
         var rangeMod = rangeModifers[rangeFromTarget] || rangeModifers.default;
 
-        console.log(rangeMod);
+        console.log(rangeFromTarget);
 
 
         defender.hp.current -= applyPhysicalDamage(attacker, defender, 'range', rangeMod, 0);
@@ -201,6 +203,30 @@ angular.module('cyberfortressApp')
           factionArray.splice(index, 1);
           angular.element('.'+keyFaction+' .unit.'+factionArray.length).remove();
           console.log(angular.element('.'+keyFaction+' .unit.'+index));
+          return true;
+
+        } else {
+
+          return false;
+
+        }
+      },
+
+      moveTo : function (moveToTile, character, map) {//if you can move there move character and return true, else return false
+        function capitalizeFirstLetter(string) {
+          return string.charAt(0).toUpperCase() + string.slice(1);
+        };
+
+        var side = capitalizeFirstLetter(character.sides);
+        var team = characters[character.sides];
+
+        if (map[moveToTile.y][moveToTile.x].type === side) {
+          for (var i = 0, len = team.length; i<len; ++i) {
+            if (_.isEqual(team[i].location, moveToTile))
+              return false;
+          }
+
+          character.location = moveToTile;
           return true;
 
         } else {

@@ -124,8 +124,15 @@ angular.module('cyberfortressApp')
 
       	var charDisplay = new charCanvasDisplay();
 
+
+      	//add click event to character canvas to cause actions on display canvas
       	charDisplay.canvas.addEventListener('click', function(event) {
       		display.mapSelect(event);
+
+      		if (encounterTimer.pause) {
+      			encounter.moveTo(display.view.select, scope.controls.action.attacker, map);
+      			charDisplay.clearScreen();
+      		}
 
       		//if character's location is the same as the selected location, set that as defender
       		characterLoop(
